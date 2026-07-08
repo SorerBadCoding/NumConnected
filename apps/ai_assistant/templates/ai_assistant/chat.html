@@ -17,46 +17,82 @@
         </form>
     </div>
 
-    <div class="card nc-chat-card">
-        <div class="nc-chat-messages" id="chatMessages">
-            {% if not chat_messages %}
-                <div class="nc-chat-welcome" id="chatWelcome">
-                    <span class="nc-avatar nc-avatar-lg nc-avatar-initials mx-auto mb-3">
-                        <i class="bi bi-stars"></i>
-                    </span>
-                    <h5>Hi {{ user.first_name|default:user.username }}, how can I help?</h5>
-                    <p class="nc-text-muted">Ask me anything about your academic life at NUM Connect.</p>
-                    {% if suggested_questions %}
-                        <div class="nc-chat-suggestions">
-                            {% for faq in suggested_questions %}
-                                <button type="button" class="nc-chip nc-suggestion-chip">{{ faq.question }}</button>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}
+    <div class="row g-3 flex-grow-1">
+        <div class="col-lg-3 d-none d-lg-block">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h6 class="nc-text-muted text-uppercase small mb-3">Quick Actions</h6>
+                    <div class="d-flex flex-column gap-2 mb-4">
+                        {% for action in quick_actions %}
+                            <button type="button" class="nc-quick-prompt" data-prompt="{{ action.prompt }}">
+                                <i class="bi {{ action.icon }}"></i> {{ action.label }}
+                            </button>
+                        {% endfor %}
+                    </div>
 
-            {% for message in chat_messages %}
-                <div class="nc-chat-bubble-row {% if message.sender == 'user' %}is-user{% else %}is-assistant{% endif %}">
-                    {% if message.sender == 'assistant' %}
-                        <span class="nc-avatar nc-avatar-sm nc-avatar-initials"><i class="bi bi-stars"></i></span>
-                    {% endif %}
-                    <div class="nc-chat-bubble">
-                        <p class="mb-0">{{ message.content|linebreaksbr }}</p>
-                        <span class="nc-chat-time">{{ message.created_at|date:"g:i A" }}</span>
+                    <h6 class="nc-text-muted text-uppercase small mb-3">Recent Conversations</h6>
+                    <div class="d-flex flex-column gap-1 nc-conversation-list">
+                        <a href="{% url 'ai_assistant:conversation' conversation.pk %}" class="nc-conversation-item active">
+                            <i class="bi bi-chat-dots"></i>
+                            <span class="text-truncate">{{ conversation.title|default:"Current conversation" }}</span>
+                        </a>
+                        {% for convo in recent_conversations %}
+                            <a href="{% url 'ai_assistant:conversation' convo.pk %}" class="nc-conversation-item">
+                                <i class="bi bi-chat"></i>
+                                <span class="text-truncate">{{ convo.title|default:"Untitled conversation" }}</span>
+                            </a>
+                        {% endfor %}
+                        {% if not recent_conversations %}
+                            <p class="nc-text-faint small mb-0">Older conversations will appear here.</p>
+                        {% endif %}
                     </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
 
-        <form id="chatForm" class="nc-chat-input" autocomplete="off">
-            {% csrf_token %}
-            <input type="hidden" name="conversation_id" id="chatConversationId" value="{{ conversation.pk }}">
-            <textarea name="message" id="chatInput" rows="1" placeholder="Type your question..." required></textarea>
-            <button type="submit" class="btn btn-primary nc-chat-send" id="chatSendBtn">
-                <i class="bi bi-send-fill"></i>
-            </button>
-        </form>
+        <div class="col-lg-9">
+            <div class="card nc-chat-card">
+                <div class="nc-chat-messages" id="chatMessages">
+                    {% if not chat_messages %}
+                        <div class="nc-chat-welcome" id="chatWelcome">
+                            <span class="nc-avatar nc-avatar-lg nc-avatar-initials mx-auto mb-3">
+                                <i class="bi bi-stars"></i>
+                            </span>
+                            <h5>Hi {{ user.first_name|default:user.username }}, how can I help?</h5>
+                            <p class="nc-text-muted">Ask me anything about your academic life at NUM Connect.</p>
+                            {% if suggested_questions %}
+                                <div class="nc-chat-suggestions">
+                                    {% for faq in suggested_questions %}
+                                        <button type="button" class="nc-chip nc-suggestion-chip">{{ faq.question }}</button>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% for message in chat_messages %}
+                        <div class="nc-chat-bubble-row {% if message.sender == 'user' %}is-user{% else %}is-assistant{% endif %}">
+                            {% if message.sender == 'assistant' %}
+                                <span class="nc-avatar nc-avatar-sm nc-avatar-initials"><i class="bi bi-stars"></i></span>
+                            {% endif %}
+                            <div class="nc-chat-bubble">
+                                <p class="mb-0">{{ message.content|linebreaksbr }}</p>
+                                <span class="nc-chat-time">{{ message.created_at|date:"g:i A" }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <form id="chatForm" class="nc-chat-input" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="conversation_id" id="chatConversationId" value="{{ conversation.pk }}">
+                    <textarea name="message" id="chatInput" rows="1" placeholder="Type your question..." required></textarea>
+                    <button type="submit" class="btn btn-primary nc-chat-send" id="chatSendBtn">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -8,8 +8,13 @@ from django.utils import timezone
 from ai_assistant.models import FAQEntry
 from announcements.models import Announcement, AnnouncementCategory
 from assignments.models import Assignment, Priority, Status
+from calendar_app.models import Exam, Holiday
+from campus_map.models import CampusLocation, LocationCategory
+from discussions.models import Post, PostCategory
 from events.models import Event, EventCategory
-from resources_app.models import Resource, ResourceCategory
+from feedback.models import Feedback, FeedbackStatus, FeedbackType
+from lecturers.models import Department, Lecturer
+from resources_app.models import Resource, ResourceCategory, Tag
 
 User = get_user_model()
 
@@ -48,6 +53,11 @@ class Command(BaseCommand):
         self._seed_events(admin, now)
         self._seed_assignments(student, now)
         self._seed_faq()
+        self._seed_lecturers()
+        self._seed_calendar_extras(now)
+        self._seed_discussion_posts(admin, student)
+        self._seed_campus_locations()
+        self._seed_feedback(student)
 
         self.stdout.write(self.style.SUCCESS("Demo data seeded successfully."))
         self.stdout.write("Admin login:   username=admin      password=AdminPass123!")
@@ -100,13 +110,13 @@ class Command(BaseCommand):
 
     def _seed_resources(self, categories, admin):
         resources = [
-            ("Intro to Algorithms - Week 1 Notes", "Lecture Notes", "Big-O notation, sorting algorithms, and complexity analysis.", "intro_algorithms_week1.txt"),
-            ("Calculus II - Final Exam 2025", "Past Exams", "Previous year's final exam with worked solutions.", "calc2_final_2025.txt"),
-            ("APA Citation Quick Guide", "Study Guides", "A quick reference for formatting citations in APA style.", "apa_citation_guide.txt"),
-            ("Lab Report Template", "Templates", "Standard template for physics and chemistry lab reports.", "lab_report_template.txt"),
-            ("Microeconomics Midterm Study Guide", "Study Guides", "Key concepts and practice questions for the microeconomics midterm.", "microecon_study_guide.txt"),
+            ("Intro to Algorithms - Week 1 Notes", "Lecture Notes", "Big-O notation, sorting algorithms, and complexity analysis.", "intro_algorithms_week1.txt", ["algorithms", "week-1"]),
+            ("Calculus II - Final Exam 2025", "Past Exams", "Previous year's final exam with worked solutions.", "calc2_final_2025.txt", ["calculus", "final-exam"]),
+            ("APA Citation Quick Guide", "Study Guides", "A quick reference for formatting citations in APA style.", "apa_citation_guide.txt", ["writing", "citations"]),
+            ("Lab Report Template", "Templates", "Standard template for physics and chemistry lab reports.", "lab_report_template.txt", ["template", "lab"]),
+            ("Microeconomics Midterm Study Guide", "Study Guides", "Key concepts and practice questions for the microeconomics midterm.", "microecon_study_guide.txt", ["midterm", "economics"]),
         ]
-        for title, category_name, description, filename in resources:
+        for title, category_name, description, filename, tag_names in resources:
             if Resource.objects.filter(title=title).exists():
                 continue
             resource = Resource(
@@ -117,6 +127,7 @@ class Command(BaseCommand):
             )
             resource.file.save(filename, ContentFile(f"{title}\n\n{description}\n".encode()), save=False)
             resource.save()
+            resource.tags.set([Tag.objects.get_or_create(name=name)[0] for name in tag_names])
 
     def _seed_announcements(self, admin, now):
         announcements = [
@@ -224,3 +235,89 @@ class Command(BaseCommand):
         ]
         for question, keywords, answer in faqs:
             FAQEntry.objects.get_or_create(question=question, defaults={"keywords": keywords, "answer": answer})
+
+    def _seed_lecturers(self):
+        lecturers = [
+            ("Dr. Ada Lovelace", Department.COMPUTER_SCIENCE, "Algorithms, Data Structures, Machine Learning",
+             "ada.lovelace@numconnect.edu", "Mon/Wed 2:00-4:00 PM", "Science Building, Room 214",
+             "Dr. Lovelace specializes in algorithm design and has taught at NUM for over a decade."),
+            ("Dr. Alan Turing", Department.MATHEMATICS, "Calculus II, Discrete Math, Number Theory",
+             "alan.turing@numconnect.edu", "Tue/Thu 10:00-12:00 PM", "Math Building, Room 305",
+             "Dr. Turing researches computability theory and enjoys teaching foundational math courses."),
+            ("Dr. Marie Curie", Department.CHEMISTRY, "General Chemistry, Radiochemistry",
+             "marie.curie@numconnect.edu", "Wed 1:00-3:00 PM", "Science Building, Room 118",
+             "Dr. Curie's research focuses on radiochemistry and analytical methods."),
+            ("Dr. John Maynard", Department.ECONOMICS, "Microeconomics, Macroeconomics",
+             "john.maynard@numconnect.edu", "Mon/Fri 11:00-1:00 PM", "Business Building, Room 220",
+             "Dr. Maynard teaches core economics courses with a focus on real-world policy analysis."),
+        ]
+        for name, department, subjects, email, office_hours, office_location, bio in lecturers:
+            Lecturer.objects.get_or_create(
+                name=name,
+                defaults={
+                    "department": department,
+                    "subjects": subjects,
+                    "email": email,
+                    "office_hours": office_hours,
+                    "office_location": office_location,
+                    "biography": bio,
+                },
+            )
+
+    def _seed_calendar_extras(self, now):
+        Exam.objects.get_or_create(
+            course="CS201", title="Midterm Exam",
+            date=(now + timedelta(days=6)).date(),
+            defaults={"start_time": "09:00", "end_time": "11:00", "location": "Hall A"},
+        )
+        Exam.objects.get_or_create(
+            course="ENV101", title="Final Exam",
+            date=(now + timedelta(days=14)).date(),
+            defaults={"start_time": "13:00", "end_time": "15:00", "location": "Hall B"},
+        )
+        Holiday.objects.get_or_create(name="Founders Day", date=(now + timedelta(days=9)).date())
+
+    def _seed_discussion_posts(self, admin, student):
+        posts = [
+            ("Best resources for Data Structures?", PostCategory.PROGRAMMING, student,
+             "I'm struggling with linked lists and trees. Any book or video recommendations that really click?"),
+            ("Reminder: Midterm review session Friday", PostCategory.ASSIGNMENTS, admin,
+             "We'll be holding a review session in the main library, 4th floor, this Friday at 5pm. Bring questions!"),
+            ("Tips for managing a heavy course load?", PostCategory.STUDY_TIPS, student,
+             "This semester feels overwhelming. How do you all plan your week across multiple deadlines?"),
+        ]
+        for title, category, author, content in posts:
+            Post.objects.get_or_create(title=title, defaults={"category": category, "author": author, "content": content})
+
+    def _seed_campus_locations(self):
+        locations = [
+            ("Main Library", LocationCategory.LIBRARY, "Central library with 24/7 study zones during finals.", "Bldg L", 20, 25),
+            ("Science Building", LocationCategory.BUILDING, "Home to Physics, Chemistry, and Biology departments.", "Bldg S", 45, 20),
+            ("Computer Lab 1", LocationCategory.LAB, "24 workstations for CS coursework.", "Bldg S-114", 55, 35),
+            ("Student Union Cafeteria", LocationCategory.CAFETERIA, "Main dining hall on campus.", "Bldg U", 30, 60),
+            ("Student Affairs Office", LocationCategory.STUDENT_AFFAIRS, "Advising, records, and financial aid.", "Bldg A", 70, 55),
+            ("Parking Lot A", LocationCategory.PARKING, "Main visitor and student parking.", "Lot A", 15, 80),
+        ]
+        for name, category, description, code, x, y in locations:
+            CampusLocation.objects.get_or_create(
+                name=name,
+                defaults={"category": category, "description": description, "building_code": code, "x_position": x, "y_position": y},
+            )
+
+    def _seed_feedback(self, student):
+        Feedback.objects.get_or_create(
+            user=student, subject="Love the new dashboard",
+            defaults={
+                "feedback_type": FeedbackType.RATING, "rating": 5,
+                "message": "The redesigned dashboard is so much easier to use. Great work!",
+                "status": FeedbackStatus.OPEN,
+            },
+        )
+        Feedback.objects.get_or_create(
+            user=student, subject="Dark mode toggle sometimes flickers",
+            defaults={
+                "feedback_type": FeedbackType.BUG,
+                "message": "When I switch themes quickly, the page flashes white for a moment before applying dark mode.",
+                "status": FeedbackStatus.OPEN,
+            },
+        )

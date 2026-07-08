@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lecturer.name }}{% endblock %}
+{% block page_title %}Lecturer Profile{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in" style="max-width: 720px;">
+    <a href="{% url 'lecturers:list' %}" class="btn btn-sm btn-light mb-3"><i class="bi bi-arrow-left"></i> Back to Directory</a>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+                {% if lecturer.photo %}
+                    <img src="{{ lecturer.photo.url }}" alt="{{ lecturer.name }}" class="nc-avatar nc-avatar-lg rounded-circle">
+                {% else %}
+                    <span class="nc-avatar nc-avatar-lg nc-avatar-initials rounded-circle" style="font-size:1.6rem;">{{ lecturer.initials }}</span>
+                {% endif %}
+                <div>
+                    <h3 class="mb-1">{{ lecturer.name }}</h3>
+                    <span class="nc-pill badge-soft-accent">{{ lecturer.get_department_display }}</span>
+                </div>
+            </div>
+
+            {% if lecturer.biography %}
+                <p>{{ lecturer.biography|linebreaksbr }}</p>
+            {% endif %}
+
+            <div class="row g-3 mt-2">
+                <div class="col-sm-6">
+                    <div class="nc-text-faint small">Email</div>
+                    <div class="fw-semibold"><i class="bi bi-envelope"></i> <a href="mailto:{{ lecturer.email }}">{{ lecturer.email }}</a></div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="nc-text-faint small">Office Location</div>
+                    <div class="fw-semibold"><i class="bi bi-geo-alt"></i> {{ lecturer.office_location|default:"—" }}</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="nc-text-faint small">Office Hours</div>
+                    <div class="fw-semibold"><i class="bi bi-clock"></i> {{ lecturer.office_hours|default:"By appointment" }}</div>
+                </div>
+            </div>
+
+            <h6 class="nc-text-muted text-uppercase small mt-4 mb-2">Subjects Taught</h6>
+            <div class="d-flex flex-wrap gap-2">
+                {% for subject in lecturer.subject_list %}
+                    <span class="nc-pill badge-soft-accent">{{ subject }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Discussion Board{% endblock %}
+{% block page_title %}Discussion Board{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">Discussion Board</h2>
+            <p class="nc-text-muted mb-0">Ask questions, share tips, and talk with classmates.</p>
+        </div>
+        <a href="{% url 'discussions:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Post</a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-2">
+                <div class="col-12 col-md-8">{{ search_form.q }}</div>
+                <div class="col-8 col-md-3">{{ search_form.category }}</div>
+                <div class="col-4 col-md-1 d-grid">
+                    <button type="submit" class="btn btn-light" aria-label="Search"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="postFeed" class="d-flex flex-column gap-3 nc-stagger">
+        {% include "discussions/_post_cards.html" %}
+    </div>
+
+    {% if not posts %}
+        <div class="card">
+            <div class="nc-empty-state">
+                <i class="bi bi-chat-square-text"></i>
+                <p class="mb-3">No posts yet. Be the first to start a discussion!</p>
+                <a href="{% url 'discussions:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Create a post</a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+        <div class="text-center mt-4" id="loadMoreWrap">
+            <a href="{% url 'discussions:list' %}?page={{ page_obj.next_page_number }}&{{ querystring }}"
+               id="loadMoreBtn" class="btn btn-light">
+                Load More <i class="bi bi-arrow-down"></i>
+            </a>
+            <div id="loadMoreSkeleton" class="d-none mt-3">
+                <div class="nc-skeleton" style="height: 120px; border-radius: var(--nc-radius-lg);"></div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/discussions.js' %}"></script>
+{% endblock %}

@@ -11,4 +11,5 @@ urlpatterns = [
     path("<int:pk>/edit/", views.ResourceUpdateView.as_view(), name="update"),
     path("<int:pk>/delete/", views.ResourceDeleteView.as_view(), name="delete"),
     path("<int:pk>/download/", views.ResourceDownloadView.as_view(), name="download"),
+    path("<int:pk>/favorite/", views.ToggleFavoriteView.as_view(), name="toggle_favorite"),
 ]

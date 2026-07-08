@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Campus Map{% endblock %}
+{% block page_title %}Campus Map{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">Campus Map</h2>
+            <p class="nc-text-muted mb-0">Find buildings, labs, and services around campus.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="nc-campus-map" id="campusMap">
+                        <div class="nc-campus-map-grid" aria-hidden="true"></div>
+                        {% for location in all_locations %}
+                            <button type="button"
+                                    class="nc-campus-marker nc-marker-{{ location.category }}"
+                                    style="left: {{ location.x_position }}%; top: {{ location.y_position }}%;"
+                                    data-location-id="{{ location.pk }}"
+                                    title="{{ location.name }}">
+                                <i class="bi {{ location.icon }}"></i>
+                            </button>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex flex-wrap gap-3 mt-3">
+                        <span class="nc-pill badge-soft-accent"><i class="bi bi-building"></i> Buildings</span>
+                        <span class="nc-pill badge-soft-info"><i class="bi bi-book"></i> Library</span>
+                        <span class="nc-pill badge-soft-warning"><i class="bi bi-cpu"></i> Labs</span>
+                        <span class="nc-pill badge-soft-success"><i class="bi bi-cup-hot"></i> Cafeteria</span>
+                        <span class="nc-pill badge-soft-muted"><i class="bi bi-p-square"></i> Parking</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4" id="locationDetailCard" style="display:none;">
+                <div class="card-body">
+                    <div class="d-flex align-items-start gap-3">
+                        <span class="nc-icon-btn" style="background:var(--nc-accent-soft); color:var(--nc-accent); border:none; font-size:1.3rem;" id="detailIcon">
+                            <i class="bi bi-geo-alt"></i>
+                        </span>
+                        <div>
+                            <h5 class="mb-1" id="detailName"></h5>
+                            <span class="nc-pill badge-soft-accent" id="detailCategory"></span>
+                            <p class="nc-text-muted mt-2 mb-0" id="detailDescription"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form method="get" class="d-flex flex-column gap-2">
+                        {{ search_form.q }}
+                        {{ search_form.category }}
+                        <button type="submit" class="btn btn-light"><i class="bi bi-search"></i> Search</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="nc-text-muted text-uppercase small mb-3">Locations ({{ locations|length }})</h6>
+                    {% if locations %}
+                        <div class="d-flex flex-column gap-1" id="locationList">
+                            {% for location in locations %}
+                                <button type="button" class="nc-campus-list-item" data-location-id="{{ location.pk }}">
+                                    <i class="bi {{ location.icon }}"></i>
+                                    <span>
+                                        <span class="d-block fw-semibold small">{{ location.name }}</span>
+                                        <span class="d-block nc-text-faint small">{{ location.get_category_display }}</span>
+                                    </span>
+                                </button>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="nc-empty-state py-4">
+                            <i class="bi bi-signpost"></i>
+                            <p class="mb-0">No locations match your search.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.NC_CAMPUS_LOCATIONS = {{ locations_json|safe }};
+</script>
+<script src="{% static 'js/campus-map.js' %}"></script>
+{% endblock %}

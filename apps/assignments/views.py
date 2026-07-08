@@ -8,6 +8,7 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from core.mixins import OwnerRequiredMixin
+from core.models import ActivityLog, ActivityVerb
 
 from .forms import AssignmentForm, AssignmentSearchForm
 from .models import Assignment, Status
@@ -64,8 +65,16 @@ class AssignmentCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
+        response = super().form_valid(form)
         messages.success(self.request, "Assignment created successfully.")
-        return super().form_valid(form)
+        ActivityLog.log(
+            self.request.user,
+            ActivityVerb.ASSIGNMENT_CREATED,
+            f'Created assignment "{self.object.title}"',
+            icon="bi-journal-plus",
+            url=self.object.get_absolute_url(),
+        )
+        return response
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -111,6 +120,13 @@ class AssignmentToggleCompleteView(LoginRequiredMixin, OwnerRequiredMixin, View)
             assignment.status = Status.NOT_STARTED
         else:
             assignment.status = Status.COMPLETED
+            ActivityLog.log(
+                request.user,
+                ActivityVerb.ASSIGNMENT_COMPLETED,
+                f'Completed assignment "{assignment.title}"',
+                icon="bi-check2-circle",
+                url=assignment.get_absolute_url(),
+            )
         assignment.save()
         messages.success(request, f'"{assignment.title}" marked as {assignment.get_status_display()}.')
         next_url = request.POST.get("next") or reverse("assignments:list")

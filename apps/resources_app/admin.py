@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Resource, ResourceCategory
+from .models import Resource, ResourceCategory, ResourceDownloadLog, Tag
 
 
 @admin.register(ResourceCategory)
@@ -10,14 +10,28 @@ class ResourceCategoryAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug")
+    prepopulated_fields = {"slug": ("name",)}
+    search_fields = ("name",)
+
+
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
     list_display = ("title", "category", "uploaded_by", "download_count", "created_at")
-    list_filter = ("category",)
+    list_filter = ("category", "tags")
     search_fields = ("title", "description")
     readonly_fields = ("download_count", "file_size")
+    filter_horizontal = ("tags",)
 
     def save_model(self, request, obj, form, change):
         if not obj.uploaded_by_id:
             obj.uploaded_by = request.user
         super().save_model(request, obj, form, change)
+
+
+@admin.register(ResourceDownloadLog)
+class ResourceDownloadLogAdmin(admin.ModelAdmin):
+    list_display = ("user", "resource", "created_at")
+    search_fields = ("user__username", "resource__title")

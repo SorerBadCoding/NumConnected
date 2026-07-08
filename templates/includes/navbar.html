@@ -10,6 +10,45 @@
         </button>
 
         <div class="dropdown">
+            <button class="nc-icon-btn nc-notif-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications">
+                <i class="bi bi-bell"></i>
+                {% if nav_unread_notifications_count %}
+                    <span class="nc-notif-badge">{{ nav_unread_notifications_count }}</span>
+                {% endif %}
+            </button>
+            <div class="dropdown-menu dropdown-menu-end nc-dropdown nc-notif-dropdown">
+                <div class="nc-dropdown-header d-flex align-items-center justify-content-between">
+                    <strong>Notifications</strong>
+                    {% if nav_unread_notifications_count %}
+                        <form method="post" action="{% url 'notifications:mark_all_read' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link btn-sm p-0">Mark all read</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <hr class="dropdown-divider">
+                {% if nav_recent_notifications %}
+                    {% for notification in nav_recent_notifications %}
+                        <a class="dropdown-item nc-notif-item {% if not notification.is_read %}nc-notif-unread{% endif %}" href="{% url 'notifications:mark_read' notification.pk %}">
+                            <span class="nc-notif-icon"><i class="bi {{ notification.icon }}"></i></span>
+                            <span class="nc-notif-text">
+                                <span class="d-block fw-semibold">{{ notification.title }}</span>
+                                <span class="d-block nc-text-muted small">{{ notification.created_at|timesince }} ago</span>
+                            </span>
+                        </a>
+                    {% endfor %}
+                    <hr class="dropdown-divider">
+                    <a href="{% url 'notifications:list' %}" class="dropdown-item text-center small">View all notifications</a>
+                {% else %}
+                    <div class="nc-empty-state py-3">
+                        <i class="bi bi-bell-slash"></i>
+                        <p class="mb-0 small">No notifications yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="dropdown">
             <button class="nc-icon-btn nc-user-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {% if user.profile.profile_picture_url %}
                     <img src="{{ user.profile.profile_picture_url }}" alt="{{ user }}" class="nc-avatar nc-avatar-sm">

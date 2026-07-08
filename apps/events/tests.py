@@ -59,3 +59,22 @@ class EventPermissionTests(TestCase):
         self.client.login(username="student", password="pw123456")
         response = self.client.get(reverse("events:list"), {"q": "basketball", "when": "all"})
         self.assertContains(response, "Basketball Finals")
+
+    def test_toggle_rsvp(self):
+        event = Event.objects.create(
+            title="Club Fair", description="", category=EventCategory.SOCIAL,
+            location="Quad", organizer=self.staff,
+            start_datetime=timezone.now(), end_datetime=timezone.now() + timezone.timedelta(hours=2),
+        )
+        self.client.login(username="student", password="pw123456")
+
+        response = self.client.post(
+            reverse("events:toggle_rsvp", args=[event.pk]), HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.json(), {"joined": True, "attendee_count": 1})
+        self.assertTrue(event.attendees.filter(username="student").exists())
+
+        response = self.client.post(
+            reverse("events:toggle_rsvp", args=[event.pk]), HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.json(), {"joined": False, "attendee_count": 0})

@@ -13,13 +13,22 @@
     <nav class="nc-sidebar-nav">
         <ul class="nc-nav-list">
             <li>
-                <a class="nc-nav-link {% nav_active 'dashboard' %}" href="{% url 'dashboard:home' %}">
+                <a class="nc-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'dashboard:home' %}">
                     <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
                 </a>
             </li>
+        </ul>
+
+        <div class="nc-nav-section-label">Academics</div>
+        <ul class="nc-nav-list">
             <li>
                 <a class="nc-nav-link {% nav_active 'assignments' %}" href="{% url 'assignments:list' %}">
                     <i class="bi bi-journal-text"></i><span>Assignments</span>
+                </a>
+            </li>
+            <li>
+                <a class="nc-nav-link {% nav_active 'calendar_app' %}" href="{% url 'calendar_app:month' %}">
+                    <i class="bi bi-calendar3"></i><span>Academic Calendar</span>
                 </a>
             </li>
             <li>
@@ -32,6 +41,24 @@
                     <i class="bi bi-calendar-event"></i><span>Campus Events</span>
                 </a>
             </li>
+        </ul>
+
+        <div class="nc-nav-section-label">Community</div>
+        <ul class="nc-nav-list">
+            <li>
+                <a class="nc-nav-link {% nav_active 'discussions' %}" href="{% url 'discussions:list' %}">
+                    <i class="bi bi-chat-square-text"></i><span>Discussion Board</span>
+                </a>
+            </li>
+            <li>
+                <a class="nc-nav-link {% nav_active 'lecturers' %}" href="{% url 'lecturers:list' %}">
+                    <i class="bi bi-person-workspace"></i><span>Lecturer Directory</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nc-nav-section-label">Resources</div>
+        <ul class="nc-nav-list">
             <li>
                 <a class="nc-nav-link {% nav_active 'resources' %}" href="{% url 'resources:list' %}">
                     <i class="bi bi-folder2-open"></i><span>Study Resources</span>
@@ -40,6 +67,29 @@
             <li>
                 <a class="nc-nav-link {% nav_active 'ai_assistant' %}" href="{% url 'ai_assistant:chat' %}">
                     <i class="bi bi-stars"></i><span>AI Assistant</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nc-nav-section-label">Insights</div>
+        <ul class="nc-nav-list">
+            <li>
+                <a class="nc-nav-link {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}" href="{% url 'dashboard:analytics' %}">
+                    <i class="bi bi-bar-chart-line"></i><span>My Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a class="nc-nav-link {% nav_active 'campus_map' %}" href="{% url 'campus_map:map' %}">
+                    <i class="bi bi-map"></i><span>Campus Map</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nc-nav-section-label">Support</div>
+        <ul class="nc-nav-list">
+            <li>
+                <a class="nc-nav-link {% nav_active 'feedback' %}" href="{% url 'feedback:list' %}">
+                    <i class="bi bi-chat-left-text"></i><span>Feedback Center</span>
                 </a>
             </li>
         </ul>

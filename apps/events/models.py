@@ -32,6 +32,9 @@ class Event(TimeStampedModel):
         limit_choices_to={"is_staff": True},
     )
     image = models.ImageField(upload_to="events/", blank=True, null=True)
+    attendees = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name="attending_events"
+    )
 
     class Meta:
         ordering = ["start_datetime"]
@@ -64,3 +67,7 @@ class Event(TimeStampedModel):
     @property
     def is_upcoming(self):
         return self.start_datetime > timezone.now()
+
+    @property
+    def attendee_count(self):
+        return self.attendees.count()

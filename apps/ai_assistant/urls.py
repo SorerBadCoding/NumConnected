@@ -6,6 +6,7 @@ app_name = "ai_assistant"
 
 urlpatterns = [
     path("", views.ChatView.as_view(), name="chat"),
+    path("conversations/<int:pk>/", views.ChatView.as_view(), name="conversation"),
     path("send/", views.SendMessageView.as_view(), name="send_message"),
     path("new/", views.NewConversationView.as_view(), name="new_conversation"),
 ]

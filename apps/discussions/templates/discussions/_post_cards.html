@@ -1,0 +1,44 @@
+{% for post in posts %}
+    <div class="card nc-card-hover nc-post-card">
+        <div class="card-body">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                {% if post.author.profile.profile_picture_url %}
+                    <img src="{{ post.author.profile.profile_picture_url }}" alt="" class="nc-avatar nc-avatar-sm">
+                {% else %}
+                    <span class="nc-avatar nc-avatar-sm nc-avatar-initials">{{ post.author.initials }}</span>
+                {% endif %}
+                <div>
+                    <div class="fw-semibold small">{{ post.author.get_full_name|default:post.author.username }}</div>
+                    <div class="nc-text-faint small">{{ post.created_at|timesince }} ago</div>
+                </div>
+                <span class="nc-pill badge-soft-accent ms-auto">{{ post.get_category_display }}</span>
+            </div>
+
+            <h5 class="mb-2"><a href="{% url 'discussions:detail' post.pk %}" class="text-reset">{{ post.title }}</a></h5>
+            <p class="nc-text-muted">{{ post.content|truncatewords:30 }}</p>
+
+            {% if post.image %}
+                <a href="{% url 'discussions:detail' post.pk %}">
+                    <img src="{{ post.image.url }}" alt="" class="nc-post-image">
+                </a>
+            {% endif %}
+
+            <div class="d-flex align-items-center gap-3 pt-2 mt-2 border-top">
+                <button type="button"
+                        class="btn btn-sm btn-light nc-like-btn {% if user in post.likes.all %}active{% endif %}"
+                        data-post-id="{{ post.pk }}"
+                        data-like-url="{% url 'discussions:toggle_like' post.pk %}">
+                    <i class="bi {% if user in post.likes.all %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                    <span class="nc-like-count">{{ post.like_count }}</span>
+                </button>
+                <a href="{% url 'discussions:detail' post.pk %}" class="btn btn-sm btn-light">
+                    <i class="bi bi-chat-square-text"></i> {{ post.comment_count }}
+                </a>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+<template id="paginationMeta"
+          data-has-next="{{ page_obj.has_next|yesno:'true,false' }}"
+          data-next-page="{% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}"></template>
+

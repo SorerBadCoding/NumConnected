@@ -1,0 +1,52 @@
+<footer class="nc-mkt-footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <a href="{% url 'core:landing' %}" class="nc-brand-link mb-3 d-inline-flex">
+                    <span class="nc-brand-mark">NC</span>
+                    <span class="nc-brand-text">
+                        <strong>NUM Connect</strong>
+                        <small>Smart Student Portal</small>
+                    </span>
+                </a>
+                <p class="nc-text-muted">Everything a student needs — assignments, announcements, events, resources, and an AI assistant — in one calm, connected place.</p>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h6 class="nc-mkt-footer-heading">Product</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h6 class="nc-mkt-footer-heading">Campus</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2">
+                    <li><a href="#announcements">Announcements</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h6 class="nc-mkt-footer-heading">Account</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2">
+                    <li><a href="{% url 'accounts:login' %}">Log In</a></li>
+                    <li><a href="{% url 'accounts:register' %}">Register</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h6 class="nc-mkt-footer-heading">Follow</h6>
+                <div class="d-flex gap-2">
+                    <a href="#" class="nc-icon-btn" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="nc-icon-btn" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="nc-icon-btn" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="d-flex flex-wrap justify-content-between gap-2">
+            <span class="nc-text-faint small">&copy; {% now "Y" %} NUM Connect. Built for students, by students.</span>
+            <span class="nc-text-faint small">Made with care for the NUM community.</span>
+        </div>
+    </div>
+</footer>

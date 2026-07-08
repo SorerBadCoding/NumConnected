@@ -63,3 +63,28 @@ class ChatViewTests(TestCase):
         self.client.post(reverse("ai_assistant:new_conversation"))
         after = ChatConversation.objects.filter(user=self.user).count()
         self.assertEqual(after, before + 1)
+
+    def test_new_conversation_redirects_to_it_directly(self):
+        response = self.client.post(reverse("ai_assistant:new_conversation"))
+        new_conversation = ChatConversation.objects.filter(user=self.user).latest("created_at")
+        self.assertRedirects(response, reverse("ai_assistant:conversation", args=[new_conversation.pk]))
+
+    def test_recent_conversations_excludes_current(self):
+        current = ChatConversation.objects.create(user=self.user, title="Current")
+        older = ChatConversation.objects.create(user=self.user, title="Older")
+        response = self.client.get(reverse("ai_assistant:conversation", args=[current.pk]))
+        recent_ids = [c.pk for c in response.context["recent_conversations"]]
+        self.assertIn(older.pk, recent_ids)
+        self.assertNotIn(current.pk, recent_ids)
+
+    def test_cannot_open_another_users_conversation(self):
+        other = User.objects.create_user(username="other", password="pw123456", email="o@x.edu")
+        other_convo = ChatConversation.objects.create(user=other, title="Private")
+        response = self.client.get(reverse("ai_assistant:conversation", args=[other_convo.pk]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_quick_actions_in_context(self):
+        response = self.client.get(reverse("ai_assistant:chat"))
+        labels = [a["label"] for a in response.context["quick_actions"]]
+        self.assertIn("Summarize Notes", labels)
+        self.assertIn("Explain Code", labels)

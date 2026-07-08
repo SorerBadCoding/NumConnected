@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.subject }}{% endblock %}
+{% block page_title %}Feedback Details{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in" style="max-width: 720px;">
+    <a href="{% url 'feedback:list' %}" class="btn btn-sm btn-light mb-3"><i class="bi bi-arrow-left"></i> Back to Feedback Center</a>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="nc-pill badge-soft-accent">{{ item.get_feedback_type_display }}</span>
+                <span class="nc-pill {{ item.status_badge_class }}">{{ item.get_status_display }}</span>
+                {% if item.rating %}
+                    <span class="nc-pill badge-soft-muted">
+                        {% for _ in item.rating_stars %}<i class="bi bi-star-fill"></i>{% endfor %}
+                    </span>
+                {% endif %}
+            </div>
+            <h3 class="mb-2">{{ item.subject }}</h3>
+            <p class="nc-text-faint small mb-3">
+                Submitted by {{ item.user.get_full_name|default:item.user.username }} on {{ item.created_at|date:"M d, Y g:i A" }}
+            </p>
+            <p>{{ item.message|linebreaksbr }}</p>
+        </div>
+    </div>
+
+    {% if item.admin_reply %}
+        <div class="card mb-4 nc-notif-card-unread">
+            <div class="card-body">
+                <h6 class="nc-text-muted text-uppercase small mb-2"><i class="bi bi-reply-fill"></i> Response from NUM Connect</h6>
+                <p class="mb-0">{{ item.admin_reply|linebreaksbr }}</p>
+                {% if item.resolved_at %}
+                    <p class="nc-text-faint small mt-2 mb-0">Resolved on {{ item.resolved_at|date:"M d, Y" }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if user.is_staff %}
+        <div class="card">
+            <div class="card-body">
+                <h6 class="nc-text-muted text-uppercase small mb-3">Admin Response</h6>
+                <form method="post" action="{% url 'feedback:reply' item.pk %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        {{ reply_form.status }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reply</label>
+                        {{ reply_form.admin_reply }}
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Save &amp; Reply</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -6,7 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from .models import Resource, ResourceCategory
+from .models import Resource, ResourceCategory, ResourceDownloadLog, ResourceView, Tag
 
 User = get_user_model()
 
@@ -59,3 +59,81 @@ class ResourcePermissionTests(TestCase):
 
         response = self.client.get(reverse("resources:list"), {"q": "apa"})
         self.assertContains(response, "APA Citation Guide")
+
+    def test_upload_creates_tags_from_comma_separated_input(self):
+        self.client.login(username="staff", password="pw123456")
+        upload = SimpleUploadedFile("notes.txt", b"content", content_type="text/plain")
+        self.client.post(
+            reverse("resources:create"),
+            {
+                "title": "Tagged Notes", "description": "x", "category": self.category.pk,
+                "file": upload, "tags_input": "midterm, review, chapter-3",
+            },
+        )
+        resource = Resource.objects.get(title="Tagged Notes")
+        self.assertEqual(
+            set(resource.tags.values_list("name", flat=True)),
+            {"midterm", "review", "chapter-3"},
+        )
+        self.assertEqual(Tag.objects.count(), 3)
+
+    def test_toggle_favorite(self):
+        upload = SimpleUploadedFile("fav.txt", b"content", content_type="text/plain")
+        resource = Resource.objects.create(title="Fav Me", category=self.category, uploaded_by=self.staff, file=upload)
+        self.client.login(username="student", password="pw123456")
+
+        response = self.client.post(
+            reverse("resources:toggle_favorite", args=[resource.pk]),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.json(), {"favorited": True})
+        self.assertTrue(resource.favorited_by.filter(username="student").exists())
+
+        response = self.client.post(
+            reverse("resources:toggle_favorite", args=[resource.pk]),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.json(), {"favorited": False})
+
+    def test_favorites_only_filter(self):
+        upload1 = SimpleUploadedFile("a.txt", b"a", content_type="text/plain")
+        upload2 = SimpleUploadedFile("b.txt", b"b", content_type="text/plain")
+        favorited = Resource.objects.create(title="Favorited One", category=self.category, uploaded_by=self.staff, file=upload1)
+        Resource.objects.create(title="Not Favorited", category=self.category, uploaded_by=self.staff, file=upload2)
+        favorited.favorited_by.add(self.student)
+
+        self.client.login(username="student", password="pw123456")
+        response = self.client.get(reverse("resources:list"), {"favorites_only": "on"})
+        titles = [r.title for r in response.context["resources"]]
+        self.assertEqual(titles, ["Favorited One"])
+
+    def test_detail_view_records_recently_viewed(self):
+        upload = SimpleUploadedFile("view.txt", b"content", content_type="text/plain")
+        resource = Resource.objects.create(title="Viewed Doc", category=self.category, uploaded_by=self.staff, file=upload)
+        self.client.login(username="student", password="pw123456")
+
+        self.client.get(reverse("resources:detail", args=[resource.pk]))
+        self.assertTrue(ResourceView.objects.filter(user__username="student", resource=resource).exists())
+
+        # Viewing again should update, not duplicate, the record.
+        self.client.get(reverse("resources:detail", args=[resource.pk]))
+        self.assertEqual(ResourceView.objects.filter(user__username="student", resource=resource).count(), 1)
+
+    def test_download_creates_log_entry(self):
+        upload = SimpleUploadedFile("log.txt", b"content", content_type="text/plain")
+        resource = Resource.objects.create(title="Log Doc", category=self.category, uploaded_by=self.staff, file=upload)
+        self.client.login(username="student", password="pw123456")
+
+        self.client.get(reverse("resources:download", args=[resource.pk]))
+        self.assertEqual(ResourceDownloadLog.objects.filter(user__username="student", resource=resource).count(), 1)
+
+    def test_sort_by_most_downloaded(self):
+        upload1 = SimpleUploadedFile("a.txt", b"a", content_type="text/plain")
+        upload2 = SimpleUploadedFile("b.txt", b"b", content_type="text/plain")
+        popular = Resource.objects.create(title="Popular", category=self.category, uploaded_by=self.staff, file=upload1, download_count=10)
+        Resource.objects.create(title="Unpopular", category=self.category, uploaded_by=self.staff, file=upload2, download_count=0)
+
+        self.client.login(username="student", password="pw123456")
+        response = self.client.get(reverse("resources:list"), {"sort": "popular"})
+        titles = [r.title for r in response.context["resources"]]
+        self.assertEqual(titles[0], "Popular")

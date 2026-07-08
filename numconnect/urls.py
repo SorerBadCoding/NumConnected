@@ -14,13 +14,19 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    path("", include("dashboard.urls")),
+    path("dashboard/", include("dashboard.urls")),
     path("accounts/", include("accounts.urls")),
     path("assignments/", include("assignments.urls")),
     path("announcements/", include("announcements.urls")),
     path("events/", include("events.urls")),
     path("resources/", include("resources_app.urls")),
     path("ai-assistant/", include("ai_assistant.urls")),
+    path("notifications/", include("notifications.urls")),
+    path("calendar/", include("calendar_app.urls")),
+    path("discussions/", include("discussions.urls")),
+    path("lecturers/", include("lecturers.urls")),
+    path("campus-map/", include("campus_map.urls")),
+    path("feedback/", include("feedback.urls")),
     path("", include("core.urls")),
 ]
 

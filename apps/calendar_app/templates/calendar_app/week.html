@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Weekly Calendar{% endblock %}
+{% block page_title %}Weekly Calendar{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">{{ week_start|date:"M d" }} &ndash; {{ week_end|date:"M d, Y" }}</h2>
+            {% include "calendar_app/_legend.html" %}
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <a href="{% url 'calendar_app:month' %}" class="btn btn-light btn-sm"><i class="bi bi-calendar3"></i> Month view</a>
+            <div class="btn-group">
+                <a href="{% url 'calendar_app:week' prev_week.year prev_week.month prev_week.day %}" class="btn btn-light btn-sm"><i class="bi bi-chevron-left"></i></a>
+                <a href="{% url 'calendar_app:week' %}" class="btn btn-light btn-sm">This Week</a>
+                <a href="{% url 'calendar_app:week' next_week.year next_week.month next_week.day %}" class="btn btn-light btn-sm"><i class="bi bi-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <form method="get" class="mb-3" style="max-width: 360px;">
+        <div class="input-group">
+            <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search this week...">
+        </div>
+    </form>
+
+    <div class="row g-3 nc-stagger">
+        {% for day in days %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 {% if day.is_today %}nc-calendar-day-today{% endif %}">
+                    <div class="card-body">
+                        <h6 class="mb-3">{{ day.date|date:"D, M d" }}</h6>
+                        {% if day.items %}
+                            <div class="d-flex flex-column gap-2">
+                                {% for item in day.items %}
+                                    {% if item.url %}
+                                        <a href="{{ item.url }}" class="nc-pill {{ item.badge_class }} d-inline-flex align-self-start">{{ item.label|truncatechars:24 }}</a>
+                                    {% else %}
+                                        <span class="nc-pill {{ item.badge_class }} d-inline-flex align-self-start">{{ item.label|truncatechars:24 }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="nc-text-faint small mb-0">Nothing scheduled.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

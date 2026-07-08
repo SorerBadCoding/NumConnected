@@ -1,0 +1,44 @@
+{% extends "base_bare.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/marketing.css' %}">
+{% endblock %}
+
+{% block body %}
+<header class="nc-mkt-nav">
+    <div class="nc-mkt-nav-inner">
+        <a href="{% url 'core:landing' %}" class="nc-brand-link">
+            <span class="nc-brand-mark">NC</span>
+            <span class="nc-brand-text">
+                <strong>NUM Connect</strong>
+                <small>Smart Student Portal</small>
+            </span>
+        </a>
+
+        <nav class="nc-mkt-links d-none d-lg-flex">
+            <a href="#features">Features</a>
+            <a href="#announcements">Announcements</a>
+            <a href="#events">Events</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <div class="d-flex align-items-center gap-2">
+            <button class="nc-icon-btn nc-theme-toggle" type="button" aria-label="Toggle dark mode">
+                <i class="bi bi-moon-stars-fill nc-theme-icon-dark"></i>
+                <i class="bi bi-sun-fill nc-theme-icon-light"></i>
+            </button>
+            <a href="{% url 'accounts:login' %}" class="btn btn-light d-none d-sm-inline-flex">Log In</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Get Started</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    {% block marketing_content %}{% endblock %}
+</main>
+
+{% include "includes/marketing_footer.html" %}
+{% endblock %}

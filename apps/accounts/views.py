@@ -6,9 +6,11 @@ from django.contrib.auth.views import (
     LogoutView,
     PasswordChangeView as BasePasswordChangeView,
 )
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, TemplateView, View
 from django.shortcuts import redirect, render
+
+from core.models import ActivityLog, ActivityVerb
 
 from .forms import LoginForm, PasswordChangeForm, ProfileUpdateForm, RegisterForm, UserUpdateForm
 
@@ -75,6 +77,13 @@ class ProfileEditView(LoginRequiredMixin, View):
             user_form.save()
             profile_form.save()
             messages.success(request, "Your profile has been updated.")
+            ActivityLog.log(
+                request.user,
+                ActivityVerb.PROFILE_UPDATED,
+                "Updated their profile",
+                icon="bi-person-gear",
+                url=reverse("accounts:profile"),
+            )
             return redirect("accounts:profile")
 
         messages.error(request, "Please correct the errors below.")

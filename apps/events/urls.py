@@ -10,4 +10,5 @@ urlpatterns = [
     path("<int:pk>/", views.EventDetailView.as_view(), name="detail"),
     path("<int:pk>/edit/", views.EventUpdateView.as_view(), name="update"),
     path("<int:pk>/delete/", views.EventDeleteView.as_view(), name="delete"),
+    path("<int:pk>/rsvp/", views.ToggleRSVPView.as_view(), name="toggle_rsvp"),
 ]

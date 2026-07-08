@@ -1,5 +1,7 @@
 from django import forms
 
+from .models import ContactMessage
+
 
 class BootstrapFormMixin:
     """Apply Bootstrap 5 form-control/form-select/form-check classes.
@@ -29,3 +31,15 @@ class BootstrapFormMixin:
 
             if field.help_text and "aria-describedby" not in widget.attrs:
                 widget.attrs.setdefault("aria-label", str(field.label or ""))
+
+
+class ContactMessageForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = ContactMessage
+        fields = ["name", "email", "subject", "message"]
+        widgets = {
+            "name": forms.TextInput(attrs={"placeholder": "Your name"}),
+            "email": forms.EmailInput(attrs={"placeholder": "you@example.com"}),
+            "subject": forms.TextInput(attrs={"placeholder": "What's this about?"}),
+            "message": forms.Textarea(attrs={"rows": 4, "placeholder": "Your message..."}),
+        }

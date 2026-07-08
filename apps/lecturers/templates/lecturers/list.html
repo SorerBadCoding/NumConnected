@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Lecturer Directory{% endblock %}
+{% block page_title %}Lecturer Directory{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">Lecturer Directory</h2>
+            <p class="nc-text-muted mb-0">Find contact details, office hours, and subjects for university faculty.</p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-2">
+                <div class="col-12 col-md-8">{{ search_form.q }}</div>
+                <div class="col-8 col-md-3">{{ search_form.department }}</div>
+                <div class="col-4 col-md-1 d-grid">
+                    <button type="submit" class="btn btn-light" aria-label="Search"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if lecturers %}
+        <div class="row g-4 nc-stagger">
+            {% for lecturer in lecturers %}
+                <div class="col-md-6 col-lg-4">
+                    <a href="{% url 'lecturers:detail' lecturer.pk %}" class="card h-100 nc-card-hover text-reset text-decoration-none">
+                        <div class="card-body text-center">
+                            {% if lecturer.photo %}
+                                <img src="{{ lecturer.photo.url }}" alt="{{ lecturer.name }}" class="nc-avatar nc-avatar-lg rounded-circle mb-3">
+                            {% else %}
+                                <span class="nc-avatar nc-avatar-lg nc-avatar-initials rounded-circle mb-3 mx-auto" style="font-size:1.5rem;">{{ lecturer.initials }}</span>
+                            {% endif %}
+                            <h5 class="mb-1">{{ lecturer.name }}</h5>
+                            <p class="nc-text-muted small mb-2">{{ lecturer.get_department_display }}</p>
+                            <div class="d-flex flex-wrap justify-content-center gap-1">
+                                {% for subject in lecturer.subject_list|slice:":3" %}
+                                    <span class="nc-pill badge-soft-accent">{{ subject }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <nav class="mt-4" aria-label="Lecturer pages">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ querystring }}">Previous</a></li>
+                    {% endif %}
+                    <li class="page-item active"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ querystring }}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="card">
+            <div class="nc-empty-state">
+                <i class="bi bi-person-workspace"></i>
+                <p class="mb-0">No lecturers found.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

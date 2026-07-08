@@ -1,11 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from core.mixins import StaffRequiredMixin
+from core.models import ActivityLog, ActivityVerb
 
 from .forms import EventForm, EventSearchForm
 from .models import Event
@@ -53,6 +57,28 @@ class EventDetailView(LoginRequiredMixin, DetailView):
     model = Event
     template_name = "events/detail.html"
     context_object_name = "event"
+
+
+class ToggleRSVPView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        event = get_object_or_404(Event, pk=pk)
+        if request.user in event.attendees.all():
+            event.attendees.remove(request.user)
+            joined = False
+        else:
+            event.attendees.add(request.user)
+            joined = True
+            ActivityLog.log(
+                request.user,
+                ActivityVerb.EVENT_JOINED,
+                f'RSVP\'d to "{event.title}"',
+                icon="bi-calendar-check",
+                url=event.get_absolute_url(),
+            )
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return JsonResponse({"joined": joined, "attendee_count": event.attendee_count})
+        return HttpResponseRedirect(event.get_absolute_url())
 
 
 class EventCreateView(LoginRequiredMixin, StaffRequiredMixin, CreateView):

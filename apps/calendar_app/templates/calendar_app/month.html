@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Academic Calendar{% endblock %}
+{% block page_title %}Academic Calendar{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">{{ month_name }} {{ year }}</h2>
+            {% include "calendar_app/_legend.html" %}
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <a href="{% url 'calendar_app:week' %}" class="btn btn-light btn-sm"><i class="bi bi-calendar-week"></i> Week view</a>
+            <div class="btn-group">
+                <a href="{% url 'calendar_app:month' prev_year prev_month %}" class="btn btn-light btn-sm"><i class="bi bi-chevron-left"></i></a>
+                <a href="{% url 'calendar_app:month' %}" class="btn btn-light btn-sm">Today</a>
+                <a href="{% url 'calendar_app:month' next_year next_month %}" class="btn btn-light btn-sm"><i class="bi bi-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <form method="get" class="mb-3" style="max-width: 360px;">
+        <div class="input-group">
+            <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search this month...">
+        </div>
+    </form>
+
+    <div class="card">
+        <div class="card-body p-2 p-md-3">
+            <div class="nc-calendar-grid nc-calendar-head">
+                <div class="nc-calendar-headcell">Mon</div>
+                <div class="nc-calendar-headcell">Tue</div>
+                <div class="nc-calendar-headcell">Wed</div>
+                <div class="nc-calendar-headcell">Thu</div>
+                <div class="nc-calendar-headcell">Fri</div>
+                <div class="nc-calendar-headcell">Sat</div>
+                <div class="nc-calendar-headcell">Sun</div>
+            </div>
+            {% for week in weeks %}
+                <div class="nc-calendar-grid">
+                    {% for day in week %}
+                        <div class="nc-calendar-day {% if not day.is_current_month %}nc-calendar-day-muted{% endif %} {% if day.is_today %}nc-calendar-day-today{% endif %}">
+                            <span class="nc-calendar-daynum">{{ day.date.day }}</span>
+                            <div class="nc-calendar-items">
+                                {% for item in day.items|slice:":3" %}
+                                    {% if item.url %}
+                                        <a href="{{ item.url }}" class="nc-calendar-chip {{ item.badge_class }}" title="{{ item.label }}">{{ item.label|truncatechars:16 }}</a>
+                                    {% else %}
+                                        <span class="nc-calendar-chip {{ item.badge_class }}" title="{{ item.label }}">{{ item.label|truncatechars:16 }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if day.items|length > 3 %}
+                                    <span class="nc-text-faint small">+{{ day.items|length|add:"-3" }} more</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

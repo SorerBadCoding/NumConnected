@@ -105,7 +105,101 @@
         </div>
     </div>
 
-    <div class="row g-4">
+    <!-- Today's schedule -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="nc-section-head">
+                <h5><i class="bi bi-calendar-day nc-text-accent"></i> Today's Schedule</h5>
+                <a href="{% url 'calendar_app:month' %}" class="small">Open calendar</a>
+            </div>
+            {% if schedule_items %}
+                <div class="nc-timeline">
+                    {% for item in schedule_items %}
+                        <a href="{{ item.url }}" class="nc-timeline-item">
+                            <span class="nc-timeline-time">{{ item.time|date:"g:i A" }}</span>
+                            <span class="nc-timeline-dot nc-timeline-dot-{{ item.type }}"><i class="bi {{ item.icon }}"></i></span>
+                            <span class="nc-timeline-content">
+                                <span class="fw-semibold d-block">{{ item.title }}</span>
+                                <span class="nc-text-muted small">{{ item.subtitle }}</span>
+                            </span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="nc-empty-state py-4">
+                    <i class="bi bi-cup-hot"></i>
+                    <p class="mb-0">Nothing on your schedule for today. Enjoy the calm!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Assignment progress -->
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="nc-section-head">
+                        <h5><i class="bi bi-graph-up-arrow nc-text-accent"></i> Assignment Progress</h5>
+                    </div>
+                    {% if total_assignments %}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="nc-text-muted small">Overall completion</span>
+                            <span class="fw-semibold">{{ progress_percent }}%</span>
+                        </div>
+                        <div class="progress mb-4" style="height: 10px;" role="progressbar" aria-valuenow="{{ progress_percent }}" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: {{ progress_percent }}%;"></div>
+                        </div>
+                        <div class="d-flex flex-column gap-2">
+                            {% for item in priority_breakdown %}
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="nc-text-muted small">{{ item.label }} priority pending</span>
+                                    <span class="nc-pill badge-soft-muted">{{ item.count }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="nc-empty-state py-4">
+                            <i class="bi bi-journal-plus"></i>
+                            <p class="mb-2">No assignments tracked yet.</p>
+                            <a href="{% url 'assignments:create' %}" class="btn btn-sm btn-light">Add your first one</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="col-lg-7">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="nc-section-head">
+                        <h5><i class="bi bi-activity nc-text-accent"></i> Recent Activity</h5>
+                    </div>
+                    {% if recent_activity %}
+                        <div class="nc-activity-feed">
+                            {% for activity in recent_activity %}
+                                <div class="nc-activity-item">
+                                    <span class="nc-activity-icon"><i class="bi {{ activity.icon }}"></i></span>
+                                    <span>
+                                        <span class="d-block">{{ activity.description }}</span>
+                                        <span class="nc-text-faint small">{{ activity.created_at|timesince }} ago</span>
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="nc-empty-state py-4">
+                            <i class="bi bi-hourglass"></i>
+                            <p class="mb-0">Your activity feed will fill up as you use NUM Connect.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
         <!-- Upcoming assignments -->
         <div class="col-lg-4">
             <div class="card h-100">
@@ -200,6 +294,65 @@
                         <div class="nc-empty-state py-4">
                             <i class="bi bi-calendar-x"></i>
                             <p class="mb-0">No upcoming events scheduled.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Recent notifications -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="nc-section-head">
+                        <h5><i class="bi bi-bell nc-text-accent"></i> Recent Notifications</h5>
+                        <a href="{% url 'notifications:list' %}" class="small">View all</a>
+                    </div>
+                    {% if recent_notifications %}
+                        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                            {% for notification in recent_notifications %}
+                                <li class="d-flex align-items-start gap-2">
+                                    <span class="nc-notif-icon flex-shrink-0"><i class="bi {{ notification.icon }}"></i></span>
+                                    <div>
+                                        <span class="d-block {% if not notification.is_read %}fw-semibold{% endif %}">{{ notification.title }}</span>
+                                        <span class="nc-text-faint small">{{ notification.created_at|timesince }} ago</span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="nc-empty-state py-4">
+                            <i class="bi bi-bell-slash"></i>
+                            <p class="mb-0">No notifications yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- New study resources -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="nc-section-head">
+                        <h5><i class="bi bi-folder2-open nc-text-accent"></i> New Study Resources</h5>
+                        <a href="{% url 'resources:list' %}" class="small">Browse all</a>
+                    </div>
+                    {% if latest_resources %}
+                        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                            {% for resource in latest_resources %}
+                                <li>
+                                    <a href="{% url 'resources:detail' resource.pk %}" class="fw-semibold text-reset">{{ resource.title }}</a>
+                                    <div class="nc-text-muted small">{{ resource.category.name|default:"Uncategorized" }} &middot; {{ resource.created_at|date:"M d" }}</div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="nc-empty-state py-4">
+                            <i class="bi bi-folder2-open"></i>
+                            <p class="mb-0">No study resources uploaded yet.</p>
                         </div>
                     {% endif %}
                 </div>

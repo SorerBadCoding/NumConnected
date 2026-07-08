@@ -1,0 +1,331 @@
+{% extends "base_marketing.html" %}
+{% load static %}
+
+{% block title %}NUM Connect{% endblock %}
+
+{% block marketing_content %}
+
+<!-- Hero -->
+<section class="nc-hero">
+    <div class="nc-hero-bg" aria-hidden="true">
+        <span class="nc-hero-blob nc-hero-blob-1"></span>
+        <span class="nc-hero-blob nc-hero-blob-2"></span>
+        <span class="nc-hero-blob nc-hero-blob-3"></span>
+    </div>
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="nc-pill badge-soft-accent mb-3"><i class="bi bi-stars"></i> Now with an AI Assistant</span>
+                <h1 class="nc-hero-title">Your entire university life, <span class="nc-text-accent">connected.</span></h1>
+                <p class="nc-hero-subtitle">Assignments, announcements, campus events, study resources, and an AI assistant — one calm, fast portal instead of five disconnected apps.</p>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg"><i class="bi bi-rocket-takeoff"></i> Get Started Free</a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-light btn-lg">Log In</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="nc-hero-illustration">
+                    <svg viewBox="0 0 520 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration of the NUM Connect dashboard">
+                        <defs>
+                            <linearGradient id="ncHeroGrad1" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#6366f1"/>
+                                <stop offset="100%" stop-color="#a855f7"/>
+                            </linearGradient>
+                        </defs>
+                        <rect x="40" y="30" width="440" height="300" rx="20" fill="var(--nc-surface)" stroke="var(--nc-border-strong)" stroke-width="2"/>
+                        <rect x="40" y="30" width="440" height="46" rx="20" fill="var(--nc-surface-alt)"/>
+                        <circle cx="66" cy="53" r="6" fill="#f87171"/>
+                        <circle cx="86" cy="53" r="6" fill="#fbbf24"/>
+                        <circle cx="106" cy="53" r="6" fill="#4ade80"/>
+                        <rect x="64" y="96" width="150" height="70" rx="12" fill="url(#ncHeroGrad1)" opacity="0.9"/>
+                        <rect x="228" y="96" width="120" height="32" rx="8" fill="var(--nc-surface-alt)"/>
+                        <rect x="228" y="134" width="120" height="32" rx="8" fill="var(--nc-surface-alt)"/>
+                        <rect x="362" y="96" width="118" height="70" rx="12" fill="var(--nc-accent-soft)"/>
+                        <rect x="64" y="182" width="416" height="20" rx="6" fill="var(--nc-surface-alt)"/>
+                        <rect x="64" y="212" width="340" height="20" rx="6" fill="var(--nc-surface-alt)"/>
+                        <rect x="64" y="242" width="380" height="20" rx="6" fill="var(--nc-surface-alt)"/>
+                        <rect x="64" y="272" width="200" height="36" rx="10" fill="url(#ncHeroGrad1)" opacity="0.85"/>
+                        <circle cx="440" cy="290" r="24" fill="#4ade80" opacity="0.85"/>
+                        <path d="M430 290 l7 7 l14 -16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 nc-stagger">
+            <div class="col-6 col-lg-3">
+                <div class="card nc-stat-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-people-fill nc-text-accent nc-stat-icon"></i>
+                        <h2 class="nc-counter mb-0" data-target="{{ stats.students }}">0</h2>
+                        <p class="nc-text-muted mb-0">Students</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="card nc-stat-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-folder2-open nc-text-accent nc-stat-icon"></i>
+                        <h2 class="nc-counter mb-0" data-target="{{ stats.resources }}">0</h2>
+                        <p class="nc-text-muted mb-0">Study Resources</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="card nc-stat-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-megaphone nc-text-accent nc-stat-icon"></i>
+                        <h2 class="nc-counter mb-0" data-target="{{ stats.announcements }}">0</h2>
+                        <p class="nc-text-muted mb-0">Announcements</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="card nc-stat-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-calendar-event nc-text-accent nc-stat-icon"></i>
+                        <h2 class="nc-counter mb-0" data-target="{{ stats.events }}">0</h2>
+                        <p class="nc-text-muted mb-0">Campus Events</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="nc-pill badge-soft-accent mb-2">Features</span>
+            <h2>Everything you need, nothing you don't</h2>
+            <p class="nc-text-muted">A single, focused toolkit for academic life.</p>
+        </div>
+        <div class="row g-4 nc-stagger">
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 nc-card-hover nc-feature-card">
+                    <div class="card-body">
+                        <span class="nc-feature-icon" style="background:var(--nc-accent-soft); color:var(--nc-accent);"><i class="bi bi-grid-1x2-fill"></i></span>
+                        <h5 class="mt-3">Smart Dashboard</h5>
+                        <p class="nc-text-muted mb-0">A daily briefing of your schedule, progress, and priorities the moment you log in.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 nc-card-hover nc-feature-card">
+                    <div class="card-body">
+                        <span class="nc-feature-icon" style="background:var(--nc-info-soft); color:var(--nc-info);"><i class="bi bi-journal-text"></i></span>
+                        <h5 class="mt-3">Assignment Manager</h5>
+                        <p class="nc-text-muted mb-0">Track due dates, priorities, and progress across every course in one clean list.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 nc-card-hover nc-feature-card">
+                    <div class="card-body">
+                        <span class="nc-feature-icon" style="background:var(--nc-success-soft); color:var(--nc-success);"><i class="bi bi-stars"></i></span>
+                        <h5 class="mt-3">AI Assistant</h5>
+                        <p class="nc-text-muted mb-0">Instant answers to common questions, with a clear path to your advisor for the rest.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 nc-card-hover nc-feature-card">
+                    <div class="card-body">
+                        <span class="nc-feature-icon" style="background:var(--nc-warning-soft); color:var(--nc-warning);"><i class="bi bi-folder2-open"></i></span>
+                        <h5 class="mt-3">Study Resources</h5>
+                        <p class="nc-text-muted mb-0">Lecture notes, past papers, and guides — organized, searchable, one click away.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 nc-card-hover nc-feature-card">
+                    <div class="card-body">
+                        <span class="nc-feature-icon" style="background:var(--nc-danger-soft); color:var(--nc-danger);"><i class="bi bi-megaphone"></i></span>
+                        <h5 class="mt-3">Announcements</h5>
+                        <p class="nc-text-muted mb-0">Campus news that reaches you the moment it's published — never buried in email.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 nc-card-hover nc-feature-card">
+                    <div class="card-body">
+                        <span class="nc-feature-icon" style="background:var(--nc-accent-soft); color:var(--nc-accent);"><i class="bi bi-calendar-event"></i></span>
+                        <h5 class="mt-3">Campus Events</h5>
+                        <p class="nc-text-muted mb-0">Discover workshops, fairs, and socials happening around you — and never miss one.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Latest announcements -->
+<section id="announcements" class="py-5 nc-section-alt">
+    <div class="container">
+        <div class="nc-section-head">
+            <div>
+                <span class="nc-pill badge-soft-accent mb-2">Stay in the loop</span>
+                <h2 class="mb-0">Latest Announcements</h2>
+            </div>
+        </div>
+        {% if latest_announcements %}
+            <div class="row g-4 mt-1 nc-stagger">
+                {% for announcement in latest_announcements %}
+                    <div class="col-md-4">
+                        <div class="card h-100 nc-card-hover">
+                            <div class="card-body">
+                                <span class="nc-pill badge-soft-accent mb-2">{{ announcement.get_category_display }}</span>
+                                <h5>{{ announcement.title }}</h5>
+                                <p class="nc-text-muted">{{ announcement.content|truncatewords:20 }}</p>
+                                <span class="nc-text-faint small">{{ announcement.publish_at|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="nc-empty-state"><i class="bi bi-megaphone"></i><p class="mb-0">No announcements published yet.</p></div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Upcoming events -->
+<section id="events" class="py-5">
+    <div class="container">
+        <div class="nc-section-head">
+            <div>
+                <span class="nc-pill badge-soft-accent mb-2">What's happening</span>
+                <h2 class="mb-0">Upcoming Events</h2>
+            </div>
+        </div>
+        {% if upcoming_events %}
+            <div class="row g-4 mt-1 nc-stagger">
+                {% for event in upcoming_events %}
+                    <div class="col-md-4">
+                        <div class="card h-100 nc-card-hover">
+                            <div class="nc-event-image nc-event-image-placeholder"><i class="bi bi-calendar-event"></i></div>
+                            <div class="card-body">
+                                <span class="nc-pill badge-soft-accent mb-2">{{ event.get_category_display }}</span>
+                                <h5>{{ event.title }}</h5>
+                                <p class="nc-text-muted small mb-1"><i class="bi bi-calendar3"></i> {{ event.start_datetime|date:"M d, Y g:i A" }}</p>
+                                <p class="nc-text-muted small mb-0"><i class="bi bi-geo-alt"></i> {{ event.location }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="nc-empty-state"><i class="bi bi-calendar-x"></i><p class="mb-0">No upcoming events scheduled yet.</p></div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section id="testimonials" class="py-5 nc-section-alt">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="nc-pill badge-soft-accent mb-2">Loved by students</span>
+            <h2>What students are saying</h2>
+        </div>
+        <div class="row g-4 nc-stagger">
+            {% for testimonial in testimonials %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-quote nc-text-accent" style="font-size: 1.75rem;"></i>
+                            <p class="mt-2">{{ testimonial.quote }}</p>
+                            <div class="d-flex align-items-center gap-2 mt-3">
+                                <span class="nc-avatar nc-avatar-sm nc-avatar-initials">{{ testimonial.name|slice:":1" }}</span>
+                                <div>
+                                    <div class="fw-semibold small">{{ testimonial.name }}</div>
+                                    <div class="nc-text-faint small">{{ testimonial.role }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="py-5">
+    <div class="container" style="max-width: 760px;">
+        <div class="text-center mb-5">
+            <span class="nc-pill badge-soft-accent mb-2">FAQ</span>
+            <h2>Frequently asked questions</h2>
+        </div>
+        <div class="accordion" id="landingFaqAccordion">
+            {% for item in faq_items %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faqItem{{ forloop.counter }}">
+                            {{ item.question }}
+                        </button>
+                    </h2>
+                    <div id="faqItem{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#landingFaqAccordion">
+                        <div class="accordion-body nc-text-muted">{{ item.answer }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="py-5 nc-section-alt">
+    <div class="container" style="max-width: 640px;">
+        <div class="text-center mb-4">
+            <span class="nc-pill badge-soft-accent mb-2">Get in touch</span>
+            <h2>Questions? Send us a message</h2>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="{% url 'core:contact' %}">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label">Name</label>
+                            {{ contact_form.name }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label">Email</label>
+                            {{ contact_form.email }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Subject</label>
+                            {{ contact_form.subject }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Message</label>
+                            {{ contact_form.message }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-4"><i class="bi bi-send"></i> Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA -->
+<section class="py-5">
+    <div class="container text-center">
+        <h2>Ready to simplify your student life?</h2>
+        <p class="nc-text-muted">Join your classmates already using NUM Connect.</p>
+        <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg mt-2"><i class="bi bi-rocket-takeoff"></i> Create your free account</a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/landing.js' %}"></script>
+{% endblock %}

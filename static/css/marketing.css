@@ -1,0 +1,117 @@
+/* =========================================================================
+   NUM Connect — Public marketing site (landing page)
+   ========================================================================= */
+
+body { background-color: var(--nc-bg); }
+
+/* ---- Public nav ---- */
+.nc-mkt-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background-color: var(--nc-surface);
+    border-bottom: 1px solid var(--nc-border);
+}
+.nc-mkt-nav-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+.nc-mkt-links {
+    display: flex;
+    gap: 1.5rem;
+    margin: 0 auto;
+}
+.nc-mkt-links a {
+    color: var(--nc-text-muted);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.nc-mkt-links a:hover { color: var(--nc-text); }
+
+/* ---- Hero ---- */
+.nc-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 5rem 0 4rem;
+}
+.nc-hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+.nc-hero-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.35;
+    animation: ncBlobFloat 14s ease-in-out infinite;
+}
+.nc-hero-blob-1 { width: 380px; height: 380px; background: var(--nc-accent); top: -120px; left: -80px; }
+.nc-hero-blob-2 { width: 320px; height: 320px; background: #ec4899; top: 60px; right: -100px; animation-delay: -4s; }
+.nc-hero-blob-3 { width: 260px; height: 260px; background: #22d3ee; bottom: -100px; left: 30%; animation-delay: -8s; }
+
+@keyframes ncBlobFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.08); }
+    66% { transform: translate(-20px, 25px) scale(0.95); }
+}
+
+.nc-hero .container { position: relative; z-index: 1; }
+.nc-hero-title {
+    font-size: clamp(2.1rem, 4vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+.nc-hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--nc-text-muted);
+    max-width: 520px;
+    margin-top: 1rem;
+}
+.nc-hero-illustration { animation: ncFadeIn 800ms var(--nc-ease) both; }
+.nc-hero-illustration svg { width: 100%; height: auto; filter: drop-shadow(0 20px 40px rgba(20, 21, 31, 0.12)); }
+
+/* ---- Sections ---- */
+.nc-section-alt { background-color: var(--nc-surface-alt); }
+
+/* ---- Stat cards ---- */
+.nc-stat-card { border-radius: var(--nc-radius-lg); }
+.nc-stat-icon { font-size: 1.8rem; margin-bottom: 0.5rem; display: block; }
+.nc-counter { font-size: 2.4rem; font-weight: 700; font-family: var(--nc-font-display); }
+
+/* ---- Feature cards ---- */
+.nc-feature-card { border-radius: var(--nc-radius-lg); }
+.nc-feature-icon {
+    width: 52px; height: 52px;
+    border-radius: var(--nc-radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+}
+
+/* ---- Footer ---- */
+.nc-mkt-footer {
+    background-color: var(--nc-surface);
+    border-top: 1px solid var(--nc-border);
+    padding: 3.5rem 0 2rem;
+    margin-top: 2rem;
+}
+.nc-mkt-footer-heading {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--nc-text-faint);
+    margin-bottom: 1rem;
+}
+.nc-mkt-footer ul a { color: var(--nc-text-muted); font-size: 0.9rem; }
+.nc-mkt-footer ul a:hover { color: var(--nc-accent); }
+
+@media (max-width: 991.98px) {
+    .nc-hero { padding: 3rem 0 2.5rem; }
+    .nc-hero-illustration { margin-top: 2rem; }
+}

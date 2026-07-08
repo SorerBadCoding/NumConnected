@@ -47,10 +47,17 @@ INSTALLED_APPS = [
     "events",
     "resources_app",
     "ai_assistant",
+    "notifications",
+    "calendar_app",
+    "discussions",
+    "lecturers",
+    "campus_map",
+    "feedback",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

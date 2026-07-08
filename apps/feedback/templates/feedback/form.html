@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Feedback{% endblock %}
+{% block page_title %}Submit Feedback{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in" style="max-width: 620px;">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Feedback Type</label>
+                    {{ form.feedback_type }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Subject</label>
+                    {{ form.subject }}
+                    {% for error in form.subject.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+
+                <div class="mb-3" id="ratingField">
+                    <label class="form-label">Rating</label>
+                    {{ form.rating }}
+                    {% for error in form.rating.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Message</label>
+                    {{ form.message }}
+                    {% for error in form.message.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger py-2 mt-3">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a href="{% url 'feedback:list' %}" class="btn btn-light">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        var typeField = document.getElementById("{{ form.feedback_type.id_for_label }}");
+        var ratingWrap = document.getElementById("ratingField");
+
+        function toggleRating() {
+            ratingWrap.style.display = typeField.value === "rating" ? "block" : "none";
+        }
+        typeField.addEventListener("change", toggleRating);
+        toggleRating();
+    })();
+</script>
+{% endblock %}

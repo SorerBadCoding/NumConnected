@@ -136,6 +136,18 @@
             });
         });
 
+        // Quick-action prompts insert a starter phrase into the composer
+        // for the student to complete (e.g. paste code/notes) rather than
+        // sending immediately, since the prompt alone is often incomplete.
+        document.querySelectorAll(".nc-quick-prompt").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                input.value = btn.dataset.prompt;
+                autoResize();
+                input.focus();
+                input.setSelectionRange(input.value.length, input.value.length);
+            });
+        });
+
         scrollToBottom();
     });
 })();

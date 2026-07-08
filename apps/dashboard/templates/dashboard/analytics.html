@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}My Analytics{% endblock %}
+{% block page_title %}My Analytics{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">My Analytics</h2>
+            <p class="nc-text-muted mb-0">A look at your study habits and progress over time.</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4 nc-stagger">
+        <div class="col-6 col-lg">
+            <div class="card h-100 nc-card-hover">
+                <div class="card-body">
+                    <span class="nc-text-muted small">Completed</span>
+                    <h3 class="mt-2 mb-0">{{ completed_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="card h-100 nc-card-hover">
+                <div class="card-body">
+                    <span class="nc-text-muted small">Pending</span>
+                    <h3 class="mt-2 mb-0">{{ pending_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="card h-100 nc-card-hover">
+                <div class="card-body">
+                    <span class="nc-text-muted small">Resources Downloaded</span>
+                    <h3 class="mt-2 mb-0">{{ resources_downloaded }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="card h-100 nc-card-hover">
+                <div class="card-body">
+                    <span class="nc-text-muted small">Events Joined</span>
+                    <h3 class="mt-2 mb-0">{{ events_joined }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="card h-100 nc-card-hover">
+                <div class="card-body">
+                    <span class="nc-text-muted small"><i class="bi bi-fire nc-text-accent"></i> Study Streak</span>
+                    <h3 class="mt-2 mb-0">{{ study_streak }} <small class="nc-text-muted" style="font-size:0.9rem;">day{{ study_streak|pluralize }}</small></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="nc-text-muted text-uppercase small mb-3">Weekly Activity</h6>
+                    <canvas id="weeklyActivityChart" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="nc-text-muted text-uppercase small mb-3">Recent Performance</h6>
+                    {% if has_performance_data %}
+                        <canvas id="performanceChart" height="220"></canvas>
+                    {% else %}
+                        <div class="nc-empty-state py-4">
+                            <i class="bi bi-bar-chart"></i>
+                            <p class="mb-0">Complete some assignments to see your performance breakdown.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+    (function () {
+        var isDark = document.documentElement.getAttribute("data-bs-theme") === "dark";
+        var gridColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(20,21,31,0.06)";
+        var textColor = isDark ? "#a3a7ba" : "#676b7e";
+        Chart.defaults.color = textColor;
+        Chart.defaults.font.family = "Inter, sans-serif";
+
+        new Chart(document.getElementById("weeklyActivityChart"), {
+            type: "bar",
+            data: {
+                labels: {{ weekly_labels_json|safe }},
+                datasets: [{
+                    label: "Activity",
+                    data: {{ weekly_counts_json|safe }},
+                    backgroundColor: "#6366f1",
+                    borderRadius: 6,
+                    maxBarThickness: 36,
+                }],
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: gridColor } },
+                    x: { grid: { display: false } },
+                },
+            },
+        });
+
+        {% if has_performance_data %}
+        new Chart(document.getElementById("performanceChart"), {
+            type: "doughnut",
+            data: {
+                labels: ["On Time", "Late"],
+                datasets: [{
+                    data: [{{ on_time_count }}, {{ late_count }}],
+                    backgroundColor: ["#16a34a", "#dc2626"],
+                    borderWidth: 0,
+                }],
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: "bottom" } },
+                cutout: "65%",
+            },
+        });
+        {% endif %}
+    })();
+</script>
+{% endblock %}
