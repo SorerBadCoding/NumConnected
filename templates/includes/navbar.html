@@ -1,0 +1,41 @@
+<form method="get" action="{% url 'core:search' %}" class="nc-topbar-search d-none d-sm-flex">
+    <i class="bi bi-search"></i>
+    <input type="text" name="q" placeholder="Search NUM Connect..." aria-label="Global search" value="{{ request.GET.q }}">
+</form>
+
+<div class="nc-topbar-actions">
+        <button class="nc-icon-btn nc-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+            <i class="bi bi-moon-stars-fill nc-theme-icon-dark"></i>
+            <i class="bi bi-sun-fill nc-theme-icon-light"></i>
+        </button>
+
+        <div class="dropdown">
+            <button class="nc-icon-btn nc-user-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if user.profile.profile_picture_url %}
+                    <img src="{{ user.profile.profile_picture_url }}" alt="{{ user }}" class="nc-avatar nc-avatar-sm">
+                {% else %}
+                    <span class="nc-avatar nc-avatar-sm nc-avatar-initials">{{ user.initials }}</span>
+                {% endif %}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end nc-dropdown">
+                <li class="nc-dropdown-header">
+                    <strong>{{ user.get_full_name|default:user.username }}</strong>
+                    <small>{{ user.email }}</small>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person"></i> My Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'accounts:profile_edit' %}"><i class="bi bi-pencil-square"></i> Edit Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'accounts:password_change' %}"><i class="bi bi-shield-lock"></i> Change Password</a></li>
+                {% if user.is_staff %}
+                    <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-speedometer2"></i> Admin Panel</a></li>
+                {% endif %}
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="post" action="{% url 'accounts:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item nc-logout-btn"><i class="bi bi-box-arrow-right"></i> Log Out</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>

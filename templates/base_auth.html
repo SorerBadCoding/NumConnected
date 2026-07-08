@@ -1,0 +1,28 @@
+{% extends "base_bare.html" %}
+{% load static %}
+
+{% block body %}
+<div class="nc-auth-shell">
+    <div class="nc-auth-decor" aria-hidden="true"></div>
+
+    <div class="nc-auth-card-wrap">
+        <div class="nc-auth-brand">
+            <span class="nc-brand-mark nc-brand-mark-lg">NC</span>
+            <div>
+                <strong>NUM Connect</strong>
+                <small>Smart Student Portal</small>
+            </div>
+        </div>
+
+        <div class="nc-auth-card">
+            {% include "includes/messages.html" %}
+            {% block auth_content %}{% endblock %}
+        </div>
+
+        <button class="nc-icon-btn nc-auth-theme-toggle nc-theme-toggle" type="button" aria-label="Toggle dark mode">
+            <i class="bi bi-moon-stars-fill nc-theme-icon-dark"></i>
+            <i class="bi bi-sun-fill nc-theme-icon-light"></i>
+        </button>
+    </div>
+</div>
+{% endblock %}

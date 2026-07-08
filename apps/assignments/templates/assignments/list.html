@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Assignments{% endblock %}
+{% block page_title %}Assignment Manager{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">Assignment Manager</h2>
+            <p class="nc-text-muted mb-0">{{ total_count }} total &middot; {{ completed_count }} completed &middot; {{ overdue_count }} overdue</p>
+        </div>
+        <a href="{% url 'assignments:create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> New Assignment
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-2 align-items-center">
+                <div class="col-12 col-md-6">
+                    {{ search_form.q }}
+                </div>
+                <div class="col-6 col-md-3">
+                    {{ search_form.status }}
+                </div>
+                <div class="col-6 col-md-2">
+                    {{ search_form.priority }}
+                </div>
+                <div class="col-12 col-md-1 d-grid">
+                    <button type="submit" class="btn btn-light"><i class="bi bi-search"></i><span class="d-md-none ms-1">Search</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if assignments %}
+        <div class="row g-3 nc-stagger">
+            {% for assignment in assignments %}
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100 nc-card-hover">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="nc-pill
+                                    {% if assignment.priority == 'high' %}badge-soft-danger
+                                    {% elif assignment.priority == 'medium' %}badge-soft-warning
+                                    {% else %}badge-soft-muted{% endif %}">
+                                    {{ assignment.get_priority_display }} Priority
+                                </span>
+                                {% if assignment.is_completed %}
+                                    <span class="nc-pill badge-soft-success"><i class="bi bi-check-circle-fill"></i> Completed</span>
+                                {% elif assignment.is_overdue %}
+                                    <span class="nc-pill badge-soft-danger"><i class="bi bi-exclamation-triangle-fill"></i> Overdue</span>
+                                {% else %}
+                                    <span class="nc-pill badge-soft-info">{{ assignment.get_status_display }}</span>
+                                {% endif %}
+                            </div>
+
+                            <h5 class="mb-1"><a href="{% url 'assignments:detail' assignment.pk %}" class="text-reset">{{ assignment.title }}</a></h5>
+                            <p class="nc-text-muted small mb-2">{{ assignment.course|default:"General" }}</p>
+                            <p class="nc-text-muted small flex-grow-1">{{ assignment.description|truncatewords:18|default:"No additional notes." }}</p>
+
+                            <div class="d-flex align-items-center justify-content-between mt-2 pt-2 border-top">
+                                <span class="small nc-text-muted"><i class="bi bi-calendar3"></i> {{ assignment.due_date|date:"M d, Y g:i A" }}</span>
+                            </div>
+
+                            <div class="d-flex gap-2 mt-3">
+                                <form method="post" action="{% url 'assignments:toggle' assignment.pk %}" class="flex-grow-1">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                    <button type="submit" class="btn btn-sm w-100 {% if assignment.is_completed %}btn-light{% else %}btn-outline-primary{% endif %}">
+                                        {% if assignment.is_completed %}<i class="bi bi-arrow-counterclockwise"></i> Reopen{% else %}<i class="bi bi-check2"></i> Mark Done{% endif %}
+                                    </button>
+                                </form>
+                                <a href="{% url 'assignments:update' assignment.pk %}" class="btn btn-sm btn-light" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'assignments:delete' assignment.pk %}" class="btn btn-sm btn-light text-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <nav class="mt-4" aria-label="Assignment pages">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ querystring }}">Previous</a></li>
+                    {% endif %}
+                    <li class="page-item active"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ querystring }}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="card">
+            <div class="nc-empty-state">
+                <i class="bi bi-journal-plus"></i>
+                <p class="mb-3">No assignments match your filters yet.</p>
+                <a href="{% url 'assignments:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Create your first assignment</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+
+    <!-- Welcome card -->
+    <div class="card mb-4 nc-welcome-card">
+        <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                <h2 class="mb-1">{{ greeting }}, {{ user.first_name|default:user.username }} 👋</h2>
+                <p class="nc-text-muted mb-0">{% now "l, F j, Y" %} · Here's what's happening in your academic world today.</p>
+            </div>
+            <a href="{% url 'assignments:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Assignment</a>
+        </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="row g-3 mb-4 nc-stagger">
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{% url 'assignments:create' %}" class="nc-quick-action">
+                <span class="nc-quick-action-icon" style="background:var(--nc-accent-soft); color:var(--nc-accent);"><i class="bi bi-plus-circle"></i></span>
+                <span>New Assignment</span>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{% url 'announcements:list' %}" class="nc-quick-action">
+                <span class="nc-quick-action-icon" style="background:var(--nc-info-soft); color:var(--nc-info);"><i class="bi bi-megaphone"></i></span>
+                <span>Announcements</span>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{% url 'events:list' %}" class="nc-quick-action">
+                <span class="nc-quick-action-icon" style="background:var(--nc-warning-soft); color:var(--nc-warning);"><i class="bi bi-calendar-event"></i></span>
+                <span>Campus Events</span>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{% url 'resources:list' %}" class="nc-quick-action">
+                <span class="nc-quick-action-icon" style="background:var(--nc-success-soft); color:var(--nc-success);"><i class="bi bi-folder2-open"></i></span>
+                <span>Study Resources</span>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{% url 'ai_assistant:chat' %}" class="nc-quick-action">
+                <span class="nc-quick-action-icon" style="background:var(--nc-accent-soft); color:var(--nc-accent);"><i class="bi bi-stars"></i></span>
+                <span>AI Assistant</span>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{% url 'accounts:profile_edit' %}" class="nc-quick-action">
+                <span class="nc-quick-action-icon" style="background:var(--nc-surface-alt); color:var(--nc-text-muted);"><i class="bi bi-person-gear"></i></span>
+                <span>Edit Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Stat tiles -->
+    <div class="row g-3 mb-4 nc-stagger">
+        <div class="col-6 col-lg-3">
+            <div class="card h-100 nc-card-hover">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="nc-text-muted small">Pending Assignments</span>
+                        <span class="nc-icon-btn" style="background:var(--nc-accent-soft); color:var(--nc-accent); border:none;"><i class="bi bi-journal-text"></i></span>
+                    </div>
+                    <h3 class="mt-2 mb-0">{{ pending_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card h-100 nc-card-hover">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="nc-text-muted small">Completed</span>
+                        <span class="nc-icon-btn" style="background:var(--nc-success-soft); color:var(--nc-success); border:none;"><i class="bi bi-check2-circle"></i></span>
+                    </div>
+                    <h3 class="mt-2 mb-0">{{ completed_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card h-100 nc-card-hover">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="nc-text-muted small">Overdue</span>
+                        <span class="nc-icon-btn" style="background:var(--nc-danger-soft); color:var(--nc-danger); border:none;"><i class="bi bi-exclamation-triangle"></i></span>
+                    </div>
+                    <h3 class="mt-2 mb-0">{{ overdue_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card h-100 nc-card-hover">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="nc-text-muted small">Upcoming Events</span>
+                        <span class="nc-icon-btn" style="background:var(--nc-info-soft); color:var(--nc-info); border:none;"><i class="bi bi-calendar-event"></i></span>
+                    </div>
+                    <h3 class="mt-2 mb-0">{{ events_count }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Upcoming assignments -->
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="nc-section-head">
+                        <h5><i class="bi bi-journal-text nc-text-accent"></i> Upcoming Assignments</h5>
+                        <a href="{% url 'assignments:list' %}" class="small">View all</a>
+                    </div>
+                    {% if upcoming_assignments %}
+                        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                            {% for assignment in upcoming_assignments %}
+                                <li class="d-flex justify-content-between align-items-start gap-2">
+                                    <div>
+                                        <a href="{% url 'assignments:detail' assignment.pk %}" class="fw-semibold text-reset">{{ assignment.title }}</a>
+                                        <div class="nc-text-muted small">{{ assignment.course|default:"General" }} &middot; Due {{ assignment.due_date|date:"M d, g:i A" }}</div>
+                                    </div>
+                                    {% if assignment.is_overdue %}
+                                        <span class="nc-pill badge-soft-danger">Overdue</span>
+                                    {% elif assignment.priority == "high" %}
+                                        <span class="nc-pill badge-soft-danger">High</span>
+                                    {% elif assignment.priority == "medium" %}
+                                        <span class="nc-pill badge-soft-warning">Medium</span>
+                                    {% else %}
+                                        <span class="nc-pill badge-soft-muted">Low</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="nc-empty-state py-4">
+                            <i class="bi bi-emoji-smile"></i>
+                            <p class="mb-2">You're all caught up. No pending assignments!</p>
+                            <a href="{% url 'assignments:create' %}" class="btn btn-sm btn-light">Add an assignment</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest announcements -->
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="nc-section-head">
+                        <h5><i class="bi bi-megaphone nc-text-accent"></i> Latest Announcements</h5>
+                        <a href="{% url 'announcements:list' %}" class="small">View all</a>
+                    </div>
+                    {% if announcements %}
+                        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                            {% for announcement in announcements %}
+                                <li>
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if announcement.is_pinned %}<i class="bi bi-pin-angle-fill nc-text-accent small"></i>{% endif %}
+                                        <a href="{% url 'announcements:detail' announcement.pk %}" class="fw-semibold text-reset">{{ announcement.title }}</a>
+                                    </div>
+                                    <div class="nc-text-muted small">{{ announcement.content|truncatewords:16 }}</div>
+                                    <span class="nc-pill badge-soft-accent mt-1">{{ announcement.get_category_display }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="nc-empty-state py-4">
+                            <i class="bi bi-megaphone"></i>
+                            <p class="mb-0">No announcements yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming events -->
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="nc-section-head">
+                        <h5><i class="bi bi-calendar-event nc-text-accent"></i> Upcoming Events</h5>
+                        <a href="{% url 'events:list' %}" class="small">View all</a>
+                    </div>
+                    {% if upcoming_events %}
+                        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                            {% for event in upcoming_events %}
+                                <li>
+                                    <a href="{% url 'events:detail' event.pk %}" class="fw-semibold text-reset">{{ event.title }}</a>
+                                    <div class="nc-text-muted small">
+                                        <i class="bi bi-clock"></i> {{ event.start_datetime|date:"M d, g:i A" }}
+                                    </div>
+                                    <div class="nc-text-muted small"><i class="bi bi-geo-alt"></i> {{ event.location }}</div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="nc-empty-state py-4">
+                            <i class="bi bi-calendar-x"></i>
+                            <p class="mb-0">No upcoming events scheduled.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

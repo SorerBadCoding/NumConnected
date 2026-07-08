@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row g-4 nc-fade-in">
+    <div class="col-lg-4">
+        <div class="card text-center">
+            <div class="card-body">
+                {% if profile.profile_picture_url %}
+                    <img src="{{ profile.profile_picture_url }}" alt="{{ user }}" class="nc-avatar nc-avatar-lg rounded-circle mb-3 border">
+                {% else %}
+                    <span class="nc-avatar nc-avatar-lg nc-avatar-initials rounded-circle mb-3 mx-auto" style="font-size:1.8rem;">{{ user.initials }}</span>
+                {% endif %}
+                <h4 class="mb-0">{{ user.get_full_name|default:user.username }}</h4>
+                <p class="nc-text-muted mb-2">@{{ user.username }}</p>
+                <span class="badge badge-soft-accent">{{ profile.get_academic_year_display }}</span>
+                {% if user.is_staff %}<span class="badge badge-soft-info ms-1">Staff</span>{% endif %}
+
+                <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary w-100 mt-4">
+                    <i class="bi bi-pencil-square"></i> Edit Profile
+                </a>
+                <a href="{% url 'accounts:password_change' %}" class="btn btn-light w-100 mt-2">
+                    <i class="bi bi-shield-lock"></i> Change Password
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="nc-text-muted text-uppercase small mb-3">About</h6>
+                {% if profile.bio %}
+                    <p class="mb-0">{{ profile.bio|linebreaksbr }}</p>
+                {% else %}
+                    <p class="nc-text-muted mb-0 fst-italic">No bio added yet. <a href="{% url 'accounts:profile_edit' %}">Add one</a> to tell classmates about yourself.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h6 class="nc-text-muted text-uppercase small mb-3">Student Details</h6>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="nc-text-faint small">Student ID</div>
+                        <div class="fw-semibold">{{ profile.student_id }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="nc-text-faint small">Major</div>
+                        <div class="fw-semibold">{{ profile.major|default:"—" }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="nc-text-faint small">Academic Year</div>
+                        <div class="fw-semibold">{{ profile.get_academic_year_display }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="nc-text-faint small">Email</div>
+                        <div class="fw-semibold">{{ user.email }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="nc-text-faint small">Member Since</div>
+                        <div class="fw-semibold">{{ user.date_joined|date:"M d, Y" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

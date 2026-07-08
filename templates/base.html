@@ -1,0 +1,29 @@
+{% extends "base_bare.html" %}
+{% load static %}
+
+{% block body %}
+<div class="nc-app-shell">
+    {% include "includes/sidebar.html" %}
+
+    <div class="nc-main">
+        <header class="nc-topbar">
+            <button class="nc-icon-btn nc-sidebar-toggle d-lg-none" id="ncSidebarToggle" type="button" aria-label="Toggle navigation">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="nc-topbar-title d-none d-md-block">
+                <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+            </div>
+
+            {% include "includes/navbar.html" %}
+        </header>
+
+        <main class="nc-content">
+            {% include "includes/messages.html" %}
+            {% block content %}{% endblock %}
+        </main>
+
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+{% endblock %}

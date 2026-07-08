@@ -1,0 +1,62 @@
+{% load nav_extras %}
+<aside class="nc-sidebar" id="ncSidebar">
+    <div class="nc-sidebar-brand">
+        <a href="{% url 'dashboard:home' %}" class="nc-brand-link">
+            <span class="nc-brand-mark">NC</span>
+            <span class="nc-brand-text">
+                <strong>NUM Connect</strong>
+                <small>Smart Student Portal</small>
+            </span>
+        </a>
+    </div>
+
+    <nav class="nc-sidebar-nav">
+        <ul class="nc-nav-list">
+            <li>
+                <a class="nc-nav-link {% nav_active 'dashboard' %}" href="{% url 'dashboard:home' %}">
+                    <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a class="nc-nav-link {% nav_active 'assignments' %}" href="{% url 'assignments:list' %}">
+                    <i class="bi bi-journal-text"></i><span>Assignments</span>
+                </a>
+            </li>
+            <li>
+                <a class="nc-nav-link {% nav_active 'announcements' %}" href="{% url 'announcements:list' %}">
+                    <i class="bi bi-megaphone"></i><span>Announcements</span>
+                </a>
+            </li>
+            <li>
+                <a class="nc-nav-link {% nav_active 'events' %}" href="{% url 'events:list' %}">
+                    <i class="bi bi-calendar-event"></i><span>Campus Events</span>
+                </a>
+            </li>
+            <li>
+                <a class="nc-nav-link {% nav_active 'resources' %}" href="{% url 'resources:list' %}">
+                    <i class="bi bi-folder2-open"></i><span>Study Resources</span>
+                </a>
+            </li>
+            <li>
+                <a class="nc-nav-link {% nav_active 'ai_assistant' %}" href="{% url 'ai_assistant:chat' %}">
+                    <i class="bi bi-stars"></i><span>AI Assistant</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="nc-sidebar-footer">
+        <a href="{% url 'accounts:profile' %}" class="nc-sidebar-user">
+            {% if user.profile.profile_picture_url %}
+                <img src="{{ user.profile.profile_picture_url }}" alt="{{ user }}" class="nc-avatar">
+            {% else %}
+                <span class="nc-avatar nc-avatar-initials">{{ user.initials }}</span>
+            {% endif %}
+            <span class="nc-sidebar-user-info">
+                <strong>{{ user.get_full_name|default:user.username }}</strong>
+                <small>{{ user.profile.major|default:"Student" }}</small>
+            </span>
+        </a>
+    </div>
+</aside>
+<div class="nc-sidebar-backdrop" id="ncSidebarBackdrop"></div>

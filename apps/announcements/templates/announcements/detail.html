@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{{ announcement.title }}{% endblock %}
+{% block page_title %}Announcement{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in" style="max-width: 720px;">
+    <a href="{% url 'announcements:list' %}" class="btn btn-sm btn-light mb-3"><i class="bi bi-arrow-left"></i> Back to Announcements</a>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                {% if announcement.is_pinned %}<i class="bi bi-pin-angle-fill nc-text-accent"></i>{% endif %}
+                <span class="nc-pill badge-soft-accent">{{ announcement.get_category_display }}</span>
+            </div>
+            <h3 class="mb-2">{{ announcement.title }}</h3>
+            <p class="nc-text-muted small mb-4">
+                Published {{ announcement.publish_at|date:"l, M d, Y g:i A" }}
+                {% if announcement.author %} &middot; by {{ announcement.author.get_full_name|default:announcement.author.username }}{% endif %}
+            </p>
+
+            <div class="mb-4">{{ announcement.content|linebreaksbr }}</div>
+
+            {% if user.is_staff %}
+                <div class="d-flex gap-2 pt-3 border-top">
+                    <a href="{% url 'announcements:update' announcement.pk %}" class="btn btn-light"><i class="bi bi-pencil"></i> Edit</a>
+                    <a href="{% url 'announcements:delete' announcement.pk %}" class="btn btn-light text-danger"><i class="bi bi-trash"></i> Delete</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

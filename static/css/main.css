@@ -1,0 +1,242 @@
+/* =========================================================================
+   NUM Connect — App shell layout
+   ========================================================================= */
+
+.nc-app-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ---- Sidebar ---- */
+.nc-sidebar {
+    width: var(--nc-sidebar-width);
+    flex-shrink: 0;
+    background-color: var(--nc-surface);
+    border-right: 1px solid var(--nc-border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    z-index: 1040;
+    transition: transform var(--nc-t-base) var(--nc-ease);
+}
+
+.nc-sidebar-brand {
+    padding: 1.35rem 1.25rem;
+    border-bottom: 1px solid var(--nc-border);
+}
+.nc-brand-link {
+    display: flex; align-items: center; gap: 0.75rem;
+    color: var(--nc-text);
+}
+.nc-brand-link:hover { color: var(--nc-text); }
+.nc-brand-mark {
+    width: 40px; height: 40px; border-radius: var(--nc-radius-md);
+    background: linear-gradient(135deg, var(--nc-accent), var(--nc-accent-active, var(--nc-accent-hover)));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-family: var(--nc-font-display); font-weight: 700; font-size: 0.95rem;
+    box-shadow: var(--nc-shadow-sm);
+    flex-shrink: 0;
+}
+.nc-brand-mark-lg { width: 56px; height: 56px; font-size: 1.2rem; border-radius: var(--nc-radius-lg); }
+.nc-brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.nc-brand-text strong { font-family: var(--nc-font-display); font-size: 1rem; }
+.nc-brand-text small { color: var(--nc-text-muted); font-size: 0.72rem; }
+
+.nc-sidebar-nav { flex: 1; overflow-y: auto; padding: 1rem 0.9rem; }
+.nc-nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.2rem; }
+.nc-nav-section-label {
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--nc-text-faint); font-weight: 600;
+    padding: 0.9rem 0.75rem 0.35rem;
+}
+.nc-nav-link {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.62rem 0.75rem;
+    border-radius: var(--nc-radius-sm);
+    color: var(--nc-text-muted);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background-color var(--nc-t-fast) var(--nc-ease), color var(--nc-t-fast) var(--nc-ease);
+}
+.nc-nav-link i { font-size: 1.05rem; width: 1.3rem; text-align: center; }
+.nc-nav-link:hover { background-color: var(--nc-surface-alt); color: var(--nc-text); }
+.nc-nav-link.active {
+    background-color: var(--nc-accent-soft);
+    color: var(--nc-accent-active, var(--nc-accent));
+    font-weight: 600;
+}
+
+.nc-sidebar-footer { padding: 1rem; border-top: 1px solid var(--nc-border); }
+.nc-sidebar-user { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem; border-radius: var(--nc-radius-md); color: var(--nc-text); }
+.nc-sidebar-user:hover { background-color: var(--nc-surface-alt); color: var(--nc-text); }
+.nc-sidebar-user-info { display: flex; flex-direction: column; line-height: 1.25; overflow: hidden; }
+.nc-sidebar-user-info strong { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nc-sidebar-user-info small { color: var(--nc-text-muted); font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.nc-sidebar-backdrop {
+    display: none;
+    position: fixed; inset: 0; z-index: 1035;
+    background: rgba(10, 10, 15, 0.5);
+}
+
+/* ---- Main column ---- */
+.nc-main {
+    flex: 1;
+    margin-left: var(--nc-sidebar-width);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0;
+}
+
+.nc-topbar {
+    height: var(--nc-topbar-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 1.5rem;
+    background-color: var(--nc-surface);
+    border-bottom: 1px solid var(--nc-border);
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+.nc-topbar-title h1 { font-size: 1.15rem; margin: 0; }
+.nc-topbar-actions { display: flex; align-items: center; gap: 0.6rem; margin-left: auto; }
+
+.nc-topbar-search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--nc-surface-alt);
+    border: 1px solid var(--nc-border);
+    border-radius: var(--nc-radius-pill);
+    padding: 0.5rem 1rem;
+    flex: 1;
+    max-width: 360px;
+    margin: 0 auto;
+    color: var(--nc-text-faint);
+    transition: border-color var(--nc-t-fast) var(--nc-ease), box-shadow var(--nc-t-fast) var(--nc-ease);
+}
+.nc-topbar-search:focus-within {
+    border-color: var(--nc-accent);
+    box-shadow: var(--nc-shadow-focus);
+}
+.nc-topbar-search input {
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--nc-text);
+    font-size: 0.875rem;
+    width: 100%;
+}
+.nc-topbar-search input::placeholder { color: var(--nc-text-faint); }
+
+.nc-icon-btn {
+    width: 42px; height: 42px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--nc-border);
+    background-color: var(--nc-surface);
+    color: var(--nc-text-muted);
+    font-size: 1.05rem;
+    transition: background-color var(--nc-t-fast) var(--nc-ease), color var(--nc-t-fast) var(--nc-ease), transform var(--nc-t-fast) var(--nc-ease);
+}
+.nc-icon-btn:hover { background-color: var(--nc-surface-alt); color: var(--nc-text); transform: translateY(-1px); }
+.nc-user-btn { padding: 0; overflow: hidden; }
+
+.nc-theme-icon-light { display: none; }
+[data-bs-theme="dark"] .nc-theme-icon-dark { display: none; }
+[data-bs-theme="dark"] .nc-theme-icon-light { display: inline; }
+
+.nc-dropdown { min-width: 240px; }
+.nc-dropdown-header { padding: 0.5rem 0.75rem; display: flex; flex-direction: column; }
+.nc-dropdown-header small { color: var(--nc-text-muted); }
+.nc-logout-btn { width: 100%; text-align: left; background: none; border: none; }
+
+.nc-content {
+    flex: 1;
+    padding: 1.75rem;
+    max-width: var(--nc-content-max);
+    width: 100%;
+    margin: 0 auto;
+}
+
+.nc-footer {
+    padding: 1.25rem 1.75rem;
+    text-align: center;
+    color: var(--nc-text-faint);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--nc-border);
+}
+
+.nc-messages { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.25rem; }
+
+/* ---- Responsive: collapse sidebar off-canvas below lg ---- */
+@media (max-width: 991.98px) {
+    .nc-sidebar {
+        transform: translateX(-100%);
+    }
+    .nc-sidebar.show { transform: translateX(0); box-shadow: var(--nc-shadow-lg); }
+    .nc-main { margin-left: 0; }
+    .nc-sidebar-backdrop.show { display: block; }
+    .nc-content { padding: 1.25rem; }
+}
+
+@media (max-width: 575.98px) {
+    .nc-topbar { padding: 0 1rem; }
+    .nc-content { padding: 1rem; }
+}
+
+/* =========================================================================
+   Auth layout (login / register)
+   ========================================================================= */
+
+.nc-auth-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 15% 20%, var(--nc-accent-soft) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, var(--nc-accent-soft) 0%, transparent 45%),
+        var(--nc-bg);
+}
+
+.nc-auth-card-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+}
+
+.nc-auth-brand {
+    display: flex; align-items: center; gap: 0.9rem;
+    justify-content: center;
+    margin-bottom: 1.75rem;
+}
+.nc-auth-brand div { display: flex; flex-direction: column; text-align: left; line-height: 1.25; }
+.nc-auth-brand strong { font-family: var(--nc-font-display); font-size: 1.3rem; }
+.nc-auth-brand small { color: var(--nc-text-muted); }
+
+.nc-auth-card {
+    background-color: var(--nc-surface);
+    border: 1px solid var(--nc-border);
+    border-radius: var(--nc-radius-xl);
+    box-shadow: var(--nc-shadow-lg);
+    padding: 2.25rem;
+}
+
+.nc-auth-theme-toggle {
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+}
+
+@media (max-width: 480px) {
+    .nc-auth-card { padding: 1.5rem; border-radius: var(--nc-radius-lg); }
+}

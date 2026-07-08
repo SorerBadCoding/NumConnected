@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Resource{% endblock %}
+{% block page_title %}Delete Resource{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in" style="max-width: 480px;">
+    <div class="card border-danger-subtle">
+        <div class="card-body text-center">
+            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2.5rem;"></i>
+            <h4 class="mt-3">Delete this resource?</h4>
+            <p class="nc-text-muted">
+                "<strong>{{ resource.title }}</strong>" will be permanently removed. This cannot be undone.
+            </p>
+            <form method="post" class="d-flex gap-2 justify-content-center mt-4">
+                {% csrf_token %}
+                <a href="{% url 'resources:detail' resource.pk %}" class="btn btn-light">Cancel</a>
+                <button type="submit" class="btn btn-danger">Yes, Delete It</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

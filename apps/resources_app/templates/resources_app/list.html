@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load resource_extras %}
+
+{% block title %}Study Resources{% endblock %}
+{% block page_title %}Study Resources{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">Study Resources</h2>
+            <p class="nc-text-muted mb-0">Lecture notes, past papers, and study guides shared by your instructors.</p>
+        </div>
+        {% if user.is_staff %}
+            <a href="{% url 'resources:create' %}" class="btn btn-primary">
+                <i class="bi bi-upload"></i> Upload Resource
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-2">
+                <div class="col-12 col-md-9">{{ search_form.q }}</div>
+                <div class="col-8 col-md-2">{{ search_form.category }}</div>
+                <div class="col-4 col-md-1 d-grid">
+                    <button type="submit" class="btn btn-light"><i class="bi bi-search"></i><span class="d-md-none ms-1">Search</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if resources %}
+        <div class="row g-3 nc-stagger">
+            {% for resource in resources %}
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100 nc-card-hover">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex align-items-start gap-3 mb-2">
+                                <span class="nc-icon-btn" style="background:var(--nc-accent-soft); color:var(--nc-accent); border:none; font-size:1.3rem;">
+                                    <i class="bi {{ resource.file_extension|file_icon }}"></i>
+                                </span>
+                                <div>
+                                    <h6 class="mb-0"><a href="{% url 'resources:detail' resource.pk %}" class="text-reset">{{ resource.title }}</a></h6>
+                                    <span class="nc-text-faint small">{{ resource.file_extension }} &middot; {{ resource.file_size_display }}</span>
+                                </div>
+                            </div>
+                            <p class="nc-text-muted small flex-grow-1">{{ resource.description|truncatewords:16|default:"No description provided." }}</p>
+                            <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                                {% if resource.category %}
+                                    <span class="nc-pill badge-soft-accent">{{ resource.category.name }}</span>
+                                {% else %}
+                                    <span class="nc-pill badge-soft-muted">Uncategorized</span>
+                                {% endif %}
+                                <span class="nc-text-faint small"><i class="bi bi-download"></i> {{ resource.download_count }}</span>
+                            </div>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="{% url 'resources:download' resource.pk %}" class="btn btn-sm btn-primary flex-grow-1"><i class="bi bi-download"></i> Download</a>
+                                {% if user.is_staff %}
+                                    <a href="{% url 'resources:update' resource.pk %}" class="btn btn-sm btn-light" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a href="{% url 'resources:delete' resource.pk %}" class="btn btn-sm btn-light text-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <nav class="mt-4" aria-label="Resource pages">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ querystring }}">Previous</a></li>
+                    {% endif %}
+                    <li class="page-item active"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ querystring }}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="card">
+            <div class="nc-empty-state">
+                <i class="bi bi-folder2-open"></i>
+                <p class="mb-0">No study resources found.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

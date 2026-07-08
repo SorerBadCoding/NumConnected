@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Campus Events{% endblock %}
+{% block page_title %}Campus Events{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">Campus Events</h2>
+            <p class="nc-text-muted mb-0">Discover what's happening around campus.</p>
+        </div>
+        {% if user.is_staff %}
+            <a href="{% url 'events:create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> New Event
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-2">
+                <div class="col-12 col-md-6">{{ search_form.q }}</div>
+                <div class="col-6 col-md-3">{{ search_form.category }}</div>
+                <div class="col-6 col-md-2">{{ search_form.when }}</div>
+                <div class="col-12 col-md-1 d-grid">
+                    <button type="submit" class="btn btn-light"><i class="bi bi-search"></i><span class="d-md-none ms-1">Search</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if events %}
+        <div class="row g-4 nc-stagger">
+            {% for event in events %}
+                <div class="col-sm-6 col-xl-4">
+                    <div class="card h-100 nc-card-hover overflow-hidden">
+                        {% if event.image %}
+                            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="nc-event-image">
+                        {% else %}
+                            <div class="nc-event-image nc-event-image-placeholder">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <span class="nc-pill badge-soft-accent align-self-start mb-2">{{ event.get_category_display }}</span>
+                            <h5 class="mb-2"><a href="{% url 'events:detail' event.pk %}" class="text-reset">{{ event.title }}</a></h5>
+                            <p class="nc-text-muted small flex-grow-1">{{ event.description|truncatewords:16 }}</p>
+                            <div class="d-flex flex-column gap-1 small nc-text-muted pt-2 border-top">
+                                <span><i class="bi bi-calendar3"></i> {{ event.start_datetime|date:"D, M d, Y" }}</span>
+                                <span><i class="bi bi-clock"></i> {{ event.start_datetime|date:"g:i A" }} &ndash; {{ event.end_datetime|date:"g:i A" }}</span>
+                                <span><i class="bi bi-geo-alt"></i> {{ event.location }}</span>
+                            </div>
+                            {% if event.is_past %}
+                                <span class="nc-pill badge-soft-muted mt-2 align-self-start">Past Event</span>
+                            {% elif event.is_ongoing %}
+                                <span class="nc-pill badge-soft-success mt-2 align-self-start">Happening Now</span>
+                            {% endif %}
+                            {% if user.is_staff %}
+                                <div class="d-flex gap-2 mt-3">
+                                    <a href="{% url 'events:update' event.pk %}" class="btn btn-sm btn-light flex-grow-1"><i class="bi bi-pencil"></i> Edit</a>
+                                    <a href="{% url 'events:delete' event.pk %}" class="btn btn-sm btn-light text-danger"><i class="bi bi-trash"></i></a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <nav class="mt-4" aria-label="Event pages">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ querystring }}">Previous</a></li>
+                    {% endif %}
+                    <li class="page-item active"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ querystring }}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="card">
+            <div class="nc-empty-state">
+                <i class="bi bi-calendar-x"></i>
+                <p class="mb-0">No events found for these filters.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

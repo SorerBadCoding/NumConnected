@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load resource_extras %}
+
+{% block title %}Search{% endblock %}
+{% block page_title %}Search{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in">
+    <div class="nc-section-head">
+        <div>
+            <h2 class="mb-1">Search Results</h2>
+            {% if query %}
+                <p class="nc-text-muted mb-0">{{ total_count }} result{{ total_count|pluralize }} for "<strong>{{ query }}</strong>"</p>
+            {% else %}
+                <p class="nc-text-muted mb-0">Search across announcements, events, and study resources.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="get" class="card mb-4">
+        <div class="card-body">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" value="{{ query }}" class="form-control border-start-0" placeholder="Search everything..." autofocus>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+
+    {% if not query %}
+        <div class="card">
+            <div class="nc-empty-state">
+                <i class="bi bi-search"></i>
+                <p class="mb-0">Type something above to search NUM Connect.</p>
+            </div>
+        </div>
+    {% elif total_count == 0 %}
+        <div class="card">
+            <div class="nc-empty-state">
+                <i class="bi bi-emoji-frown"></i>
+                <p class="mb-0">No results found for "{{ query }}". Try a different keyword.</p>
+            </div>
+        </div>
+    {% else %}
+        <div class="d-flex flex-column gap-4 nc-stagger">
+            {% if announcements %}
+                <div>
+                    <h6 class="nc-text-muted text-uppercase small mb-3"><i class="bi bi-megaphone"></i> Announcements ({{ announcements|length }})</h6>
+                    <div class="d-flex flex-column gap-2">
+                        {% for announcement in announcements %}
+                            <a href="{% url 'announcements:detail' announcement.pk %}" class="card nc-card-hover text-reset text-decoration-none">
+                                <div class="card-body py-3">
+                                    <div class="fw-semibold">{{ announcement.title }}</div>
+                                    <div class="nc-text-muted small">{{ announcement.content|truncatewords:20 }}</div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if events %}
+                <div>
+                    <h6 class="nc-text-muted text-uppercase small mb-3"><i class="bi bi-calendar-event"></i> Events ({{ events|length }})</h6>
+                    <div class="d-flex flex-column gap-2">
+                        {% for event in events %}
+                            <a href="{% url 'events:detail' event.pk %}" class="card nc-card-hover text-reset text-decoration-none">
+                                <div class="card-body py-3">
+                                    <div class="fw-semibold">{{ event.title }}</div>
+                                    <div class="nc-text-muted small"><i class="bi bi-geo-alt"></i> {{ event.location }} &middot; {{ event.start_datetime|date:"M d, Y" }}</div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if resources %}
+                <div>
+                    <h6 class="nc-text-muted text-uppercase small mb-3"><i class="bi bi-folder2-open"></i> Study Resources ({{ resources|length }})</h6>
+                    <div class="d-flex flex-column gap-2">
+                        {% for resource in resources %}
+                            <a href="{% url 'resources:detail' resource.pk %}" class="card nc-card-hover text-reset text-decoration-none">
+                                <div class="card-body py-3 d-flex align-items-center gap-3">
+                                    <i class="bi {{ resource.file_extension|file_icon }} nc-text-accent"></i>
+                                    <div>
+                                        <div class="fw-semibold">{{ resource.title }}</div>
+                                        <div class="nc-text-muted small">{{ resource.category.name|default:"Uncategorized" }}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

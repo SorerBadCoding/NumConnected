@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{% if is_create %}New Announcement{% else %}Edit Announcement{% endif %}{% endblock %}
+{% block page_title %}{% if is_create %}New Announcement{% else %}Edit Announcement{% endif %}{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in" style="max-width: 680px;">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    {{ form.title }}
+                    {% for error in form.title.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Content</label>
+                    {{ form.content }}
+                    {% for error in form.content.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label class="form-label">Category</label>
+                        {{ form.category }}
+                    </div>
+                    <div class="col-sm-6 d-flex align-items-end">
+                        <div class="form-check mb-2">
+                            {{ form.is_pinned }}
+                            <label class="form-check-label" for="{{ form.is_pinned.id_for_label }}">Pin to top</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-sm-6">
+                        <label class="form-label">Publish At</label>
+                        {{ form.publish_at }}
+                        {% for error in form.publish_at.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label">Expires At <span class="nc-text-faint">(optional)</span></label>
+                        {{ form.expires_at }}
+                        {% for error in form.expires_at.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger py-2 mt-3">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a href="{% url 'announcements:list' %}" class="btn btn-light">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if is_create %}Publish{% else %}Save Changes{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

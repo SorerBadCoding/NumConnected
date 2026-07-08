@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+{% block page_title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="nc-fade-in" style="max-width: 720px;">
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="nc-text-muted text-uppercase small mb-3">Profile Picture</h6>
+                <div class="d-flex align-items-center gap-3">
+                    {% if profile_form.instance.profile_picture_url %}
+                        <img src="{{ profile_form.instance.profile_picture_url }}" alt="" class="nc-avatar nc-avatar-lg rounded-circle border">
+                    {% else %}
+                        <span class="nc-avatar nc-avatar-lg nc-avatar-initials rounded-circle" style="font-size:1.6rem;">{{ user.initials }}</span>
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        {{ profile_form.profile_picture }}
+                        {% for error in profile_form.profile_picture.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        <div class="form-text">{{ profile_form.profile_picture.help_text }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="nc-text-muted text-uppercase small mb-3">Account Information</h6>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label class="form-label">First name</label>
+                        {{ user_form.first_name }}
+                        {% for error in user_form.first_name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label">Last name</label>
+                        {{ user_form.last_name }}
+                        {% for error in user_form.last_name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Email</label>
+                        {{ user_form.email }}
+                        {% for error in user_form.email.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="nc-text-muted text-uppercase small mb-3">Student Details</h6>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label class="form-label">Student ID</label>
+                        {{ profile_form.student_id }}
+                        {% for error in profile_form.student_id.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label">Academic Year</label>
+                        {{ profile_form.academic_year }}
+                        {% for error in profile_form.academic_year.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Major</label>
+                        {{ profile_form.major }}
+                        {% for error in profile_form.major.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Bio</label>
+                        {{ profile_form.bio }}
+                        {% for error in profile_form.bio.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        <div class="form-text">{{ profile_form.bio.value|length|default:0 }}/500 characters</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 justify-content-end">
+            <a href="{% url 'accounts:profile' %}" class="btn btn-light">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

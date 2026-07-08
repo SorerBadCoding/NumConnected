@@ -1,0 +1,179 @@
+/* =========================================================================
+   NUM Connect — Design System
+   Design tokens shared across the whole app. Component-specific rules live
+   in components.css; page/app-shell layout lives in main.css.
+   ========================================================================= */
+
+:root {
+    /* Typography */
+    --nc-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --nc-font-display: 'Lexend', var(--nc-font-sans);
+
+    /* Accent */
+    --nc-accent: #6366f1;
+    --nc-accent-hover: #4f46e5;
+    --nc-accent-active: #4338ca;
+    --nc-accent-soft: #eef0ff;
+    --nc-accent-rgb: 99, 102, 241;
+
+    /* Semantic colors */
+    --nc-success: #16a34a;
+    --nc-success-soft: #eafaf0;
+    --nc-warning: #d97706;
+    --nc-warning-soft: #fef6e7;
+    --nc-danger: #dc2626;
+    --nc-danger-soft: #fdecec;
+    --nc-info: #0891b2;
+    --nc-info-soft: #e6f7fa;
+
+    /* Surfaces */
+    --nc-bg: #f6f7fb;
+    --nc-surface: #ffffff;
+    --nc-surface-alt: #f1f2f7;
+    --nc-surface-hover: #f8f9fc;
+    --nc-border: #e7e8f0;
+    --nc-border-strong: #d7d9e4;
+
+    /* Text */
+    --nc-text: #14151f;
+    --nc-text-muted: #676b7e;
+    --nc-text-faint: #9498a8;
+    --nc-text-on-accent: #ffffff;
+
+    /* Radii */
+    --nc-radius-sm: 0.5rem;
+    --nc-radius-md: 0.9rem;
+    --nc-radius-lg: 1.25rem;
+    --nc-radius-xl: 1.75rem;
+    --nc-radius-pill: 999px;
+
+    /* Shadows */
+    --nc-shadow-xs: 0 1px 2px rgba(20, 21, 31, 0.05);
+    --nc-shadow-sm: 0 2px 8px rgba(20, 21, 31, 0.06);
+    --nc-shadow-md: 0 8px 24px rgba(20, 21, 31, 0.08);
+    --nc-shadow-lg: 0 16px 40px rgba(20, 21, 31, 0.12);
+    --nc-shadow-focus: 0 0 0 4px rgba(var(--nc-accent-rgb), 0.18);
+
+    /* Layout */
+    --nc-sidebar-width: 268px;
+    --nc-topbar-height: 72px;
+    --nc-content-max: 1240px;
+
+    /* Motion */
+    --nc-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --nc-t-fast: 140ms;
+    --nc-t-base: 220ms;
+    --nc-t-slow: 360ms;
+}
+
+[data-bs-theme="dark"] {
+    --nc-accent: #818cf8;
+    --nc-accent-hover: #a5b4fc;
+    --nc-accent-active: #c7d2fe;
+    --nc-accent-soft: rgba(129, 140, 248, 0.16);
+    --nc-accent-rgb: 129, 140, 248;
+
+    --nc-success: #4ade80;
+    --nc-success-soft: rgba(74, 222, 128, 0.14);
+    --nc-warning: #fbbf24;
+    --nc-warning-soft: rgba(251, 191, 36, 0.14);
+    --nc-danger: #f87171;
+    --nc-danger-soft: rgba(248, 113, 113, 0.14);
+    --nc-info: #22d3ee;
+    --nc-info-soft: rgba(34, 211, 238, 0.14);
+
+    --nc-bg: #0b0c10;
+    --nc-surface: #15161d;
+    --nc-surface-alt: #1b1d26;
+    --nc-surface-hover: #20222c;
+    --nc-border: #262835;
+    --nc-border-strong: #333645;
+
+    --nc-text: #f2f3f8;
+    --nc-text-muted: #a3a7ba;
+    --nc-text-faint: #71758a;
+    --nc-text-on-accent: #0b0c10;
+
+    --nc-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --nc-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
+    --nc-shadow-md: 0 10px 28px rgba(0, 0, 0, 0.45);
+    --nc-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.55);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    background-color: var(--nc-bg);
+    color: var(--nc-text);
+    font-family: var(--nc-font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    transition: background-color var(--nc-t-base) var(--nc-ease), color var(--nc-t-base) var(--nc-ease);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--nc-font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--nc-text);
+}
+
+a {
+    color: var(--nc-accent);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--nc-accent-hover);
+}
+
+::selection {
+    background: var(--nc-accent-soft);
+    color: var(--nc-accent-active);
+}
+
+/* Scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--nc-border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--nc-border-strong);
+    border-radius: var(--nc-radius-pill);
+}
+
+.nc-text-muted { color: var(--nc-text-muted) !important; }
+.nc-text-faint { color: var(--nc-text-faint) !important; }
+.nc-text-accent { color: var(--nc-accent) !important; }
+
+.nc-fade-in {
+    animation: ncFadeIn var(--nc-t-slow) var(--nc-ease) both;
+}
+
+@keyframes ncFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.nc-stagger > * {
+    animation: ncFadeIn var(--nc-t-slow) var(--nc-ease) both;
+}
+.nc-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.nc-stagger > *:nth-child(2) { animation-delay: 40ms; }
+.nc-stagger > *:nth-child(3) { animation-delay: 80ms; }
+.nc-stagger > *:nth-child(4) { animation-delay: 120ms; }
+.nc-stagger > *:nth-child(5) { animation-delay: 160ms; }
+.nc-stagger > *:nth-child(6) { animation-delay: 200ms; }
